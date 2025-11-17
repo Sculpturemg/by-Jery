@@ -1,387 +1,243 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>L'Art de la Sculpture Malgache</title>
 
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><rect width='100%' height='100%' fill='%232f2b28'/><text x='50%' y='50%' font-size='30' fill='%23f7f3ef' text-anchor='middle' dominant-baseline='middle'>MG</text></svg>">
-
 <style>
-:root{
-  --bg:#fbf8f5; --accent:#8B5E3C; --muted:#666;
-  --card:#fff; --glass: rgba(255,255,255,0.7);
-  --shadow: 0 6px 20px rgba(0,0,0,0.08);
+body { margin:0; font-family: Arial, sans-serif; background:#f7f3ef; }
+header { background:#2f2b28; color:white; padding:15px; text-align:center; font-size:22px; font-weight:bold; }
+nav { display:flex; flex-wrap:wrap; justify-content:center; gap:10px; background:#403c38; padding:10px; }
+nav button { padding:10px 15px; background:#d9a066; border:none; color:white; cursor:pointer; border-radius:5px; font-weight:bold; }
+nav button:hover { background:#bb873f; }
+section { display:none; padding:20px; }
+section.visible { display:block; }
+.hero { text-align:center; background:white; padding:20px; border-radius:10px; }
+.hero img { width:100%; max-height:300px; object-fit:cover; border-radius:10px; cursor:pointer; }
+.gallery { display:grid; grid-template-columns:repeat(auto-fill, minmax(150px,1fr)); gap:10px; }
+.gallery img { width:100%; height:150px; object-fit:cover; border-radius:8px; cursor:pointer; }
+.service-card { background:white; padding:15px; border-radius:10px; margin-bottom:15px; box-shadow:0 2px 8px rgba(0,0,0,0.15); }
+
+.admin-panel { 
+  background:#fff3d6; padding:15px; border-radius:10px; margin-top:10px; 
+  display:none; /* Caché pour les visiteurs */
 }
-*{box-sizing:border-box}
-body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:#222}
-.header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:var(--accent);color:#fff}
-.brand{font-weight:800;font-size:1.15rem}
-.nav{display:flex;gap:8px;flex-wrap:wrap}
-.nav button{background:transparent;border:1px solid rgba(255,255,255,0.12);color:#fff;padding:8px 12px;border-radius:999px;cursor:pointer}
-.container{max-width:1100px;margin:18px auto;padding:0 16px}
-.hero{display:flex;gap:20px;align-items:center;background:linear-gradient(180deg,rgba(139,94,60,0.06),rgba(0,0,0,0.01));padding:18px;border-radius:12px;box-shadow:var(--shadow)}
-.hero .left{flex:1}
-.hero h1{margin:0;color:var(--accent);font-size:1.25rem}
-.hero p{margin-top:8px;color:var(--muted);line-height:1.45}
-.hero .thumb{width:320px;max-width:40%;border-radius:10px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,0.12)}
-.hero .thumb img{display:block;width:100%;height:100%;object-fit:cover;cursor:pointer}
-.section{margin-top:18px}
-.section h2{color:var(--accent);margin:0 0 10px}
-.services-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
-.service-card{background:var(--card);padding:14px;border-radius:10px;box-shadow:var(--shadow)}
-.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px}
-.gallery .item{position:relative;border-radius:8px;overflow:hidden;background:#eee}
-.gallery img{width:100%;height:140px;object-fit:cover;display:block;cursor:pointer;transition:transform .18s}
-.gallery img:hover{transform:scale(1.04)}
-.admin-panel{display:none;margin-top:12px;background:linear-gradient(180deg,#fff,#fbfbfb);padding:14px;border-radius:10px;box-shadow:var(--shadow)}
-.input, textarea, select{width:100%;padding:10px;border-radius:8px;border:1px solid #ddd;margin-bottom:10px}
-.btn{background:var(--accent);color:#fff;border:0;padding:10px 12px;border-radius:8px;cursor:pointer}
-.ghost{background:transparent;border:1px solid #ddd;color:#222}
-.lightbox{position:fixed;inset:0;background:rgba(0,0,0,0.85);display:none;align-items:center;justify-content:center;z-index:9999}
-.lightbox img{max-width:95%;max-height:95%;border-radius:10px}
-.login-panel{display:none;margin-top:18px;padding:14px;background:#fff;border-radius:10px;box-shadow:var(--shadow)}
-.login-panel input{width:100%;padding:10px;margin-bottom:10px;border-radius:8px;border:1px solid #ddd}
-@media(max-width:820px){.hero{flex-direction:column}.hero .thumb{width:100%;max-width:100%}}
+.admin-panel textarea, .admin-panel input { width:100%; padding:10px; margin-bottom:10px; }
+.admin-panel button { padding:10px; background:#d9a066; color:white; border:none; border-radius:5px; cursor:pointer; }
+
+#loginBox { 
+  background:white; padding:20px; border-radius:10px; width:90%; max-width:350px; 
+  margin:40px auto; box-shadow:0 2px 8px rgba(0,0,0,0.2);
+}
+#loginBox input { width:100%; padding:10px; margin-bottom:10px; }
+
+.lightbox { 
+  position:fixed; top:0; left:0; width:100%; height:100%; 
+  background:rgba(0,0,0,0.8); display:none; justify-content:center; align-items:center;
+}
+.lightbox img { max-width:90%; max-height:90%; border-radius:10px; }
 </style>
 </head>
 <body>
 
-<header class="header">
-  <div class="brand">L'Art de la Sculpture Malgache</div>
-  <nav class="nav">
-    <button onclick="showSection('accueil')">Accueil</button>
-    <button onclick="showSection('apropos')">À propos</button>
-    <button onclick="showSection('services')">Services</button>
-    <button onclick="showSection('galerie')">Galerie</button>
-    <button onclick="showSection('contact')">Contact</button>
-    <button onclick="toggleLogin()">Admin</button>
-  </nav>
-</header>
+<header>L'Art de la Sculpture Malgache</header>
 
-<main class="container">
+<nav>
+<button onclick="openSection('accueil')">Accueil</button>
+<button onclick="openSection('apropos')">À propos</button>
+<button onclick="openSection('services')">Services</button>
+<button onclick="openSection('galerie')">Galerie</button>
+<button onclick="openSection('contact')">Contact</button>
+<button onclick="openSection('adminLogin')">Admin</button>
+</nav>
 
-  <!-- LOGIN -->
-  <div id="loginPanel" class="login-panel" style="display:none">
-    <h3>Connexion Admin</h3>
-    <input id="login_email" class="input" type="email" placeholder="Email (ex: admin@example.com)">
-    <input id="login_pass" class="input" type="password" placeholder="Mot de passe (ex: admin123)">
-    <div style="display:flex;gap:8px">
-      <button class="btn" onclick="doLogin()">Se connecter</button>
-      <button class="ghost" onclick="toggleLogin()">Annuler</button>
-    </div>
-    <p id="loginMsg" style="color:#b00020;margin-top:8px"></p>
-  </div>
+<!-- LOGIN ADMIN -->
+<section id="adminLogin" class="visible">
+<div id="loginBox">
+<h3>Connexion Admin</h3>
+<input id="loginEmail" placeholder="Email Admin">
+<input id="loginPass" type="password" placeholder="Mot de passe">
+<button onclick="adminLogin()">Se connecter</button>
+<p id="loginError" style="color:red;"></p>
+</div>
+</section>
 
-  <!-- ACCUEIL -->
-  <section id="accueil" class="section">
-    <div class="hero">
-      <div class="left">
-        <h1 id="heroTitle">Histoire & héritage de la sculpture malgache</h1>
-        <p id="heroText">Le sculpteur malgache transmet depuis des générations l'histoire et la culture de Madagascar. Son art mélange tradition et modernité, bois et pierre, dans des œuvres uniques et inspirantes. Il participe à des expositions locales et internationales.</p>
-        <div style="margin-top:12px">
-          <button class="btn" onclick="showSection('galerie')">Voir la galerie</button>
-          <button class="ghost" onclick="openAdmin()">Gérer (Admin)</button>
-        </div>
-      </div>
-      <div class="thumb">
-        <img id="heroImage" src="" alt="Nosy Madagascar" onclick="openLightboxWith(this.src)">
-      </div>
-    </div>
+<!-- ACCUEIL -->
+<section id="accueil">
+<h2>Bienvenue dans l'univers de la sculpture malgache</h2>
+<img id="imgAccueil" src="" alt="Image accueil" onclick="openLightbox(this.src)">
+<p id="textAccueil">Texte d'accueil sur le sculpteur malgache (modifiable par admin).</p>
 
-    <div id="adminAccueil" class="admin-panel">
-      <h3>Modifier Accueil</h3>
-      <textarea id="admin_hero_text" rows="4" placeholder="Texte d'accueil (5 lignes max)"></textarea>
-      <input id="admin_hero_file" type="file" accept="image/*">
-      <div style="display:flex;gap:8px">
-        <button class="btn" onclick="saveHero()">Enregistrer Accueil</button>
-        <button class="ghost" onclick="resetHero()">Réinitialiser</button>
-      </div>
-    </div>
-  </section>
+<div class="admin-panel" id="adminAccueil">
+<h3>Modifier Accueil</h3>
+<textarea id="editAccueil" rows="4"></textarea>
+<input type="file" accept="image/*" onchange="changeAccueilImage(event)">
+<button onclick="saveAccueil()">Enregistrer</button>
+</div>
+</section>
 
-  <!-- À PROPOS -->
-  <section id="apropos" class="section">
-    <h2>À propos</h2>
-    <p id="aboutText"></p>
+<!-- A PROPOS -->
+<section id="apropos">
+<h2>À propos</h2>
+<p id="textApropos">Biographie modifiable du sculpteur malgache.</p>
 
-    <div id="adminApropos" class="admin-panel">
-      <h3>Modifier À propos</h3>
-      <textarea id="admin_about_text" rows="5" placeholder="Texte à propos..."></textarea>
-      <button class="btn" onclick="saveAbout()">Enregistrer À propos</button>
-    </div>
-  </section>
+<div class="admin-panel" id="adminApropos">
+<textarea id="editApropos" rows="4"></textarea>
+<button onclick="saveApropos()">Enregistrer</button>
+</div>
+</section>
 
-  <!-- SERVICES -->
-  <section id="services" class="section">
-    <h2>Services</h2>
-    <div class="services-grid" id="servicesGrid"></div>
+<!-- SERVICES -->
+<section id="services">
+<h2>Nos Services</h2>
+<div id="listServices">
+<div class="service-card">Commandes personnalisées</div>
+<div class="service-card">Restauration d'œuvres</div>
+<div class="service-card">Expositions</div>
+<div class="service-card">Ateliers & Formations</div>
+</div>
 
-    <div id="adminServices" class="admin-panel">
-      <h3>Modifier Services (une ligne = un service)</h3>
-      <textarea id="admin_services_text" rows="4" placeholder="Commandes personnalisées\nRestauration d'œuvres\nExpositions\nAteliers & Formations"></textarea>
-      <button class="btn" onclick="saveServices()">Enregistrer Services</button>
-    </div>
-  </section>
+<div class="admin-panel" id="adminServices">
+<textarea id="editServices" rows="5"></textarea>
+<button onclick="saveServices()">Enregistrer</button>
+</div>
+</section>
 
-  <!-- GALERIE -->
-  <section id="galerie" class="section">
-    <h2>Galerie d'œuvres</h2>
-    <div class="gallery" id="galleryGrid"></div>
+<!-- GALERIE -->
+<section id="galerie">
+<h2>Galerie</h2>
+<div class="gallery" id="galleryContainer"></div>
 
-    <div id="adminGalerie" class="admin-panel">
-      <h3>Gestion de la Galerie</h3>
-      <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px">
-        <input id="addImageFile" type="file" accept="image/*">
-        <button class="btn" onclick="addImage()">Ajouter</button>
-      </div>
-      <div id="galleryAdminList"></div>
-      <div style="margin-top:10px">
-        <button class="ghost" onclick="clearGallery()">Tout supprimer</button>
-      </div>
-    </div>
-  </section>
+<div class="admin-panel" id="adminGalerie">
+<h3>Ajouter une image</h3>
+<input type="file" accept="image/*" onchange="addGalleryImage(event)">
+<h3>Gérer les images</h3>
+<div id="galleryAdmin"></div>
+</div>
+</section>
 
-  <!-- CONTACT -->
-  <section id="contact" class="section">
-    <h2>Contact</h2>
-    <p>Email : <span id="contactEmail"></span></p>
-    <p>Téléphone : <span id="contactTel"></span></p>
-    <p>Facebook : <span id="contactFB"></span></p>
-    <p>WhatsApp : <span id="contactWA"></span></p>
+<!-- CONTACT -->
+<section id="contact">
+<h2>Contact</h2>
+<p>Email : <span id="contactEmail">sculpture@example.com</span></p>
+<p>Téléphone : <span id="contactTel">+261 34 00 000 00</span></p>
+<p>Facebook : <span id="contactFB">facebook.com/sculpture</span></p>
+<p>WhatsApp : <span id="contactWA">+261 34 00 000 00</span></p>
 
-    <div id="adminContact" class="admin-panel">
-      <h3>Modifier Contact & Identifiants Admin</h3>
-      <input id="admin_contact_email" class="input" placeholder="Email">
-      <input id="admin_contact_tel" class="input" placeholder="Téléphone">
-      <input id="admin_contact_fb" class="input" placeholder="Facebook">
-      <input id="admin_contact_wa" class="input" placeholder="WhatsApp">
+<div class="admin-panel" id="adminContact">
+<input id="editEmail" placeholder="Email">
+<input id="editTel" placeholder="Téléphone">
+<input id="editFB" placeholder="Facebook">
+<input id="editWA" placeholder="WhatsApp">
+<button onclick="saveContact()">Enregistrer</button>
+</div>
+</section>
 
-      <hr style="margin:12px 0">
-
-      <h4>Modifier identifiants Admin</h4>
-      <input id="admin_new_email" class="input" placeholder="Nouvel email admin">
-      <input id="admin_new_pass" class="input" placeholder="Nouveau mot de passe">
-
-      <div style="display:flex;gap:8px;margin-top:8px">
-        <button class="btn" onclick="saveContactAndCreds()">Enregistrer contact & identifiants</button>
-        <button class="ghost" onclick="restoreDefaults()">Restaurer valeurs par défaut</button>
-      </div>
-
-      <hr style="margin:12px 0">
-
-      <!-- EXPORT / IMPORT -->
-      <h4>Sauvegarde / Restauration (JSON)</h4>
-      <div style="display:flex;gap:8px;align-items:center">
-        <button class="btn" onclick="exportSite()">Exporter (Télécharger JSON)</button>
-        <input id="importFile" type="file" accept="application/json" style="flex:1">
-        <button class="btn" onclick="importSite()">Importer (Charger JSON)</button>
-      </div>
-      <p style="color:var(--muted);margin-top:8px">Exporter crée un fichier .json contenant tout le contenu (texte, images en base64, identifiants). Importer remplace l'état actuel.</p>
-    </div>
-  </section>
-
-</main>
-
-<!-- Lightbox -->
-<div id="lightbox" class="lightbox" onclick="document.getElementById('lightbox').style.display='none'">
-  <img id="lightboxImg" src="">
+<!-- LIGHTBOX -->
+<div id="lightbox" class="lightbox" onclick="this.style.display='none'">
+<img id="lightboxImg">
 </div>
 
 <script>
-/* ========= STORAGE KEYS & DEFAULTS ========= */
-const STORAGE_KEYS = {
-  creds: 'mg_admin_creds_v1',
-  hero: 'mg_hero_v1',
-  about: 'mg_about_v1',
-  services: 'mg_services_v1',
-  contact: 'mg_contact_v1',
-  gallery: 'mg_gallery_v1'
-};
-const DEFAULT_CREDS = { email:'admin@example.com', pass:'admin123' };
-const DEFAULT_HERO = {
-  image: 'data:image/svg+xml;utf8,' + encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' width='1200' height='700'><rect width='100%' height='100%' fill='#8b5e3c'/><text x='50%' y='50%' font-size='42' fill='#fff' text-anchor='middle' dominant-baseline='middle'>Nosy — Madagascar (image par défaut)</text></svg>`),
-  text: `Le sculpteur malgache transmet depuis des générations l'histoire et la culture de Madagascar. Son art allie tradition et créativité moderne, sculptant le bois et la pierre avec finesse.`
-};
-const DEFAULT_ABOUT = "Artisan sculpteur passionné, spécialisé dans des pièces en bois, pierre et matériaux naturels. Chaque pièce raconte une histoire.";
-const DEFAULT_SERVICES = ["Commandes personnalisées","Restauration d'œuvres","Expositions","Ateliers & Formations"];
-const DEFAULT_CONTACT = { email:'contact@artmalagasy.mg', tel:'+261 34 00 000 00', fb:'facebook.com/natureartisanale', wa:'+261 34 00 000 00' };
-const DEFAULT_GALLERY = [];
+let galleryData = [];
+let adminLogged = false;
+const ADMIN_EMAIL = "admin@example.com";
+const ADMIN_PASS = "123456";
 
-/* ========= localStorage wrappers ========= */
-function save(key, value){ localStorage.setItem(key, JSON.stringify(value)); }
-function load(key, fallback){ const v = localStorage.getItem(key); if(!v) return fallback; try { return JSON.parse(v);}catch(e){return fallback;} }
-
-/* ========= state (loaded or defaults) ========= */
-let creds = load(STORAGE_KEYS.creds, DEFAULT_CREDS);
-let hero  = load(STORAGE_KEYS.hero, DEFAULT_HERO);
-let about = load(STORAGE_KEYS.about, DEFAULT_ABOUT);
-let services = load(STORAGE_KEYS.services, DEFAULT_SERVICES);
-let contact = load(STORAGE_KEYS.contact, DEFAULT_CONTACT);
-let gallery = load(STORAGE_KEYS.gallery, DEFAULT_GALLERY);
-let loggedIn = false;
-
-/* ========= RENDER ========= */
-function renderHero(){ document.getElementById('heroImage').src = hero.image || DEFAULT_HERO.image; document.getElementById('heroText').textContent = hero.text || DEFAULT_HERO.text; }
-function renderAbout(){ document.getElementById('aboutText').textContent = about; }
-function renderServices(){ document.getElementById('servicesGrid').innerHTML = services.map(s=>`<div class="service-card">${escapeHtml(s)}</div>`).join(''); }
-function renderContact(){ document.getElementById('contactEmail').textContent = contact.email; document.getElementById('contactTel').textContent = contact.tel; document.getElementById('contactFB').textContent = contact.fb; document.getElementById('contactWA').textContent = contact.wa; }
-function renderGallery(){
-  const g = document.getElementById('galleryGrid');
-  if(!gallery || gallery.length===0){ g.innerHTML = `<p style="color:${'var(--muted)'}">Aucune œuvre pour le moment. Connectez-vous en Admin pour ajouter.</p>`; return; }
-  g.innerHTML = gallery.map((it, idx)=>`<div class="item"><img src="${it.image}" alt="Sculpture ${idx+1}" onclick="openLightboxWith('${it.image}')"></div>`).join('');
+function openSection(id){
+  document.querySelectorAll("section").forEach(s=>s.classList.remove("visible"));
+  document.getElementById(id).classList.add("visible");
 }
+
+function adminLogin(){
+  let email = loginEmail.value;
+  let pass = loginPass.value;
+
+  if(email === ADMIN_EMAIL && pass === ADMIN_PASS){
+    adminLogged = true;
+    loginError.textContent = "";
+    document.querySelectorAll(".admin-panel").forEach(el=>el.style.display="block");
+    openSection('accueil');
+  } else {
+    loginError.textContent = "Email ou mot de passe incorrect";
+  }
+}
+
+function openLightbox(src){
+  if(!src) return;
+  lightbox.style.display = "flex";
+  lightboxImg.src = src;
+}
+
+/* ACCUEIL */
+function changeAccueilImage(event){
+  let file = event.target.files[0];
+  if(file){
+    let r = new FileReader();
+    r.onload = e => imgAccueil.src = e.target.result;
+    r.readAsDataURL(file);
+  }
+}
+function saveAccueil(){
+  textAccueil.textContent = editAccueil.value;
+}
+
+/* A PROPOS */
+function saveApropos(){
+  textApropos.textContent = editApropos.value;
+}
+
+/* SERVICES */
+function saveServices(){
+  let arr = editServices.value.split("\n").filter(x=>x);
+  listServices.innerHTML = arr.map(s=>`<div class="service-card">${s}</div>`).join("");
+}
+
+/* CONTACT */
+function saveContact(){
+  contactEmail.textContent = editEmail.value || contactEmail.textContent;
+  contactTel.textContent = editTel.value || contactTel.textContent;
+  contactFB.textContent = editFB.value || contactFB.textContent;
+  contactWA.textContent = editWA.value || contactWA.textContent;
+}
+
+/* GALERIE */
+function addGalleryImage(event){
+  let file = event.target.files[0];
+  if(file){
+    let r = new FileReader();
+    r.onload = e=>{
+      galleryData.push({image:e.target.result});
+      renderGallery();
+      renderGalleryAdmin();
+    };
+    r.readAsDataURL(file);
+  }
+}
+
+function renderGallery(){
+  galleryContainer.innerHTML = galleryData.map(
+    (g,i)=>`<img src="${g.image}" onclick="openLightbox('${g.image}')">`
+  ).join("");
+}
+
 function renderGalleryAdmin(){
-  const list = document.getElementById('galleryAdminList'); list.innerHTML = '';
-  if(!gallery || gallery.length===0){ list.innerHTML = '<p>Aucune image en galerie.</p>'; return; }
-  gallery.forEach((it, idx)=>{
-    const div = document.createElement('div'); div.style.display='flex'; div.style.alignItems='center'; div.style.gap='8px'; div.style.marginBottom='10px';
-    const img = document.createElement('img'); img.src = it.image; img.style.width='100px'; img.style.height='70px'; img.style.objectFit='cover'; img.style.borderRadius='6px';
-    const file = document.createElement('input'); file.type='file'; file.accept='image/*'; file.onchange = e => updateGalleryImage(e, idx);
-    const del = document.createElement('button'); del.className='ghost'; del.textContent='Supprimer'; del.onclick = ()=>{ if(confirm('Supprimer cette image ?')){ gallery.splice(idx,1); save(STORAGE_KEYS.gallery, gallery); renderGallery(); renderGalleryAdmin(); } };
-    div.appendChild(img); div.appendChild(file); div.appendChild(del);
-    list.appendChild(div);
+  galleryAdmin.innerHTML = "";
+  galleryData.forEach((g,i)=>{
+    galleryAdmin.innerHTML += `
+      <div style="margin:10px 0;">
+        <img src="${g.image}" style="width:80px;height:80px;object-fit:cover;border-radius:5px;">
+        <button onclick="deleteGallery(${i})">Supprimer</button>
+      </div>`;
   });
 }
 
-/* ========= UTIL ========= */
-function escapeHtml(s){ if(!s) return ''; return String(s).replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[m])); }
-function openLightboxWith(src){ document.getElementById('lightboxImg').src = src; document.getElementById('lightbox').style.display='flex'; }
-function toggleLogin(){ const p = document.getElementById('loginPanel'); p.style.display = (p.style.display==='block') ? 'none' : 'block'; }
-function openAdmin(){ if(!loggedIn){ document.getElementById('loginPanel').style.display='block'; scrollToElem('loginPanel'); } else { showAdminPanels(); scrollToElem('adminAccueil'); } }
-function showAdminPanels(){ ['adminAccueil','adminApropos','adminServices','adminGalerie','adminContact'].forEach(id=>document.getElementById(id).style.display='block'); }
-function hideAdminPanels(){ ['adminAccueil','adminApropos','adminServices','adminGalerie','adminContact'].forEach(id=>document.getElementById(id).style.display='none'); }
-function scrollToElem(id){ const el=document.getElementById(id); if(el) el.scrollIntoView({behavior:'smooth',block:'center'}); }
-
-/* ========= AUTH ========= */
-function doLogin(){
-  const email = document.getElementById('login_email').value.trim();
-  const pass = document.getElementById('login_pass').value.trim();
-  if(email === creds.email && pass === creds.pass){
-    loggedIn = true; document.getElementById('loginPanel').style.display='none'; document.getElementById('loginMsg').textContent=''; showAdminPanels(); populateAdminFields(); alert('Connexion admin réussie');
-  } else { document.getElementById('loginMsg').textContent = 'Email ou mot de passe incorrect.'; }
+function deleteGallery(i){
+  galleryData.splice(i,1);
+  renderGallery();
+  renderGalleryAdmin();
 }
-
-/* ========= HERO ========= */
-function saveHero(){
-  const fileInput = document.getElementById('admin_hero_file'); const text = document.getElementById('admin_hero_text').value.trim();
-  if(text) hero.text = text;
-  if(fileInput.files && fileInput.files[0]){
-    const f = fileInput.files[0]; const rd = new FileReader();
-    rd.onload = e => { hero.image = e.target.result; save(STORAGE_KEYS.hero, hero); renderHero(); alert('Accueil mis à jour'); };
-    rd.readAsDataURL(f);
-  } else { save(STORAGE_KEYS.hero, hero); renderHero(); alert('Accueil mis à jour (texte)'); }
-}
-function resetHero(){ hero = DEFAULT_HERO; save(STORAGE_KEYS.hero, hero); renderHero(); alert('Accueil réinitialisé'); }
-
-/* ========= ABOUT ========= */
-function saveAbout(){ const txt = document.getElementById('admin_about_text').value.trim(); if(txt){ about = txt; save(STORAGE_KEYS.about, about); renderAbout(); alert('À propos mis à jour'); } }
-
-/* ========= SERVICES ========= */
-function saveServices(){ const raw = document.getElementById('admin_services_text').value.trim(); const lines = raw.split('\n').map(s=>s.trim()).filter(Boolean); services = lines; save(STORAGE_KEYS.services, services); renderServices(); alert('Services mis à jour'); }
-
-/* ========= CONTACT & CREDS ========= */
-function saveContactAndCreds(){
-  const e = document.getElementById('admin_contact_email').value.trim();
-  const t = document.getElementById('admin_contact_tel').value.trim();
-  const fb = document.getElementById('admin_contact_fb').value.trim();
-  const wa = document.getElementById('admin_contact_wa').value.trim();
-  if(e) contact.email = e; if(t) contact.tel = t; if(fb) contact.fb = fb; if(wa) contact.wa = wa; save(STORAGE_KEYS.contact, contact); renderContact();
-  const newEmail = document.getElementById('admin_new_email').value.trim(); const newPass = document.getElementById('admin_new_pass').value.trim();
-  if(newEmail) creds.email = newEmail; if(newPass) creds.pass = newPass; save(STORAGE_KEYS.creds, creds);
-  alert('Contact et identifiants mis à jour');
-}
-
-/* ========= GALLERY ========= */
-function addImage(){
-  const input = document.getElementById('addImageFile'); if(!input.files || !input.files[0]) { alert('Sélectionnez une image'); return; }
-  const f = input.files[0]; const rd = new FileReader();
-  rd.onload = e => { gallery.push({ image: e.target.result }); save(STORAGE_KEYS.gallery, gallery); renderGallery(); renderGalleryAdmin(); input.value=''; alert('Image ajoutée'); };
-  rd.readAsDataURL(f);
-}
-function updateGalleryImage(ev, idx){
-  const f = ev.target.files[0]; if(!f) return; const rd = new FileReader();
-  rd.onload = e => { gallery[idx].image = e.target.result; save(STORAGE_KEYS.gallery, gallery); renderGallery(); renderGalleryAdmin(); alert('Image mise à jour'); };
-  rd.readAsDataURL(f);
-}
-function clearGallery(){ if(!confirm('Supprimer toutes les images ?')) return; gallery = []; save(STORAGE_KEYS.gallery, gallery); renderGallery(); renderGalleryAdmin(); }
-
-/* ========= EXPORT / IMPORT ========= */
-function exportSite(){
-  const data = {
-    creds, hero, about, services, contact, gallery
-  };
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a'); a.href = url; a.download = 'site_sculpture_mg_backup.json'; document.body.appendChild(a); a.click();
-  setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 5000);
-}
-function importSite(){
-  const fInput = document.getElementById('importFile'); if(!fInput.files || !fInput.files[0]) { alert('Choisissez un fichier .json'); return; }
-  const file = fInput.files[0]; const rd = new FileReader();
-  rd.onload = e => {
-    try {
-      const obj = JSON.parse(e.target.result);
-      // validate minimal structure
-      if(!obj || typeof obj !== 'object') throw new Error('Fichier invalide');
-      // replace state
-      creds = obj.creds || creds;
-      hero = obj.hero || hero;
-      about = obj.about || about;
-      services = obj.services || services;
-      contact = obj.contact || contact;
-      gallery = obj.gallery || gallery;
-      // save all
-      save(STORAGE_KEYS.creds, creds); save(STORAGE_KEYS.hero, hero); save(STORAGE_KEYS.about, about);
-      save(STORAGE_KEYS.services, services); save(STORAGE_KEYS.contact, contact); save(STORAGE_KEYS.gallery, gallery);
-      // re-render
-      renderAll();
-      alert('Import terminé avec succès');
-    } catch(err){
-      alert('Erreur lors de l\'import : fichier invalide');
-    }
-  };
-  rd.readAsText(file);
-}
-
-/* ========= POPULATE ADMIN UI ========= */
-function populateAdminFields(){
-  document.getElementById('admin_hero_text').value = hero.text || '';
-  document.getElementById('admin_about_text').value = about || '';
-  document.getElementById('admin_services_text').value = services.join('\\n');
-  document.getElementById('admin_contact_email').value = contact.email || '';
-  document.getElementById('admin_contact_tel').value = contact.tel || '';
-  document.getElementById('admin_contact_fb').value = contact.fb || '';
-  document.getElementById('admin_contact_wa').value = contact.wa || '';
-  document.getElementById('admin_new_email').value = creds.email || '';
-}
-
-/* ========= RENDER ALL & INIT ========= */
-function renderAll(){ renderHero(); renderAbout(); renderServices(); renderContact(); renderGallery(); renderGalleryAdmin(); }
-document.addEventListener('DOMContentLoaded', ()=>{
-  // ensure defaults are saved if missing
-  if(!load(STORAGE_KEYS.creds)) save(STORAGE_KEYS.creds, DEFAULT_CREDS);
-  if(!load(STORAGE_KEYS.hero)) save(STORAGE_KEYS.hero, DEFAULT_HERO);
-  if(!load(STORAGE_KEYS.about)) save(STORAGE_KEYS.about, DEFAULT_ABOUT);
-  if(!load(STORAGE_KEYS.services)) save(STORAGE_KEYS.services, DEFAULT_SERVICES);
-  if(!load(STORAGE_KEYS.contact)) save(STORAGE_KEYS.contact, DEFAULT_CONTACT);
-  if(!load(STORAGE_KEYS.gallery)) save(STORAGE_KEYS.gallery, DEFAULT_GALLERY);
-
-  // load into variables
-  creds = load(STORAGE_KEYS.creds, DEFAULT_CREDS);
-  hero = load(STORAGE_KEYS.hero, DEFAULT_HERO);
-  about = load(STORAGE_KEYS.about, DEFAULT_ABOUT);
-  services = load(STORAGE_KEYS.services, DEFAULT_SERVICES);
-  contact = load(STORAGE_KEYS.contact, DEFAULT_CONTACT);
-  gallery = load(STORAGE_KEYS.gallery, DEFAULT_GALLERY);
-
-  // initial UI
-  renderAll();
-  showSection('accueil');
-});
-
-/* ========= helper load wrapper used above ========= */
-function load(key, fallback){ const v = localStorage.getItem(key); if(!v) return fallback; try{ return JSON.parse(v); }catch(e){ return fallback; } }
 </script>
 
 </body>
