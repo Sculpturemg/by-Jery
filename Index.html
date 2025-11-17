@@ -25,7 +25,6 @@ section.visible { display:block; }
 .admin-panel button:hover { background:#bb873f; }
 .lightbox { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); display:none; align-items:center; justify-content:center; z-index:10000; }
 .lightbox img { max-width:90%; max-height:90%; border-radius:10px; }
-.lightbox:target { display:flex; }
 @media (max-width:600px){
   nav { flex-direction:column; }
   .service-card { margin-bottom:10px; }
@@ -47,13 +46,13 @@ section.visible { display:block; }
 <!-- ACCUEIL -->
 <section id="accueil" class="hero visible">
 <h2>Bienvenue dans l'univers de la sculpture malgache</h2>
-<img id="imgAccueil" src="" alt="Accueil" onclick="openLightbox(this.src)">
-<p id="textAccueil">[Histoire du sculpteur malgache, 5 lignes modifiables]</p>
+<img id="imgAccueil" src="https://i.imgur.com/pyK8b0X.jpeg" alt="Accueil" onclick="openLightbox(this.src)">
+<p id="textAccueil">Le sculpteur malgache transmet depuis des générations l'histoire et la culture de Madagascar. Son art mélange tradition et modernité, bois et pierre, dans des œuvres uniques et inspirantes. Il participe à des expositions locales et internationales. Sa passion pour la sculpture est reconnue dans tout le pays. Aujourd'hui, il continue de former de jeunes apprentis et de partager son savoir-faire.</p>
 
 <div class="admin-panel">
 <h3>Admin Accueil</h3>
-<textarea id="editAccueil" rows="5" placeholder="Texte Accueil"></textarea>
-<input type="file" id="fileAccueil" accept="image/*" onchange="loadAccueilImage(event)">
+<textarea id="editAccueil" rows="5"></textarea>
+<input type="file" accept="image/*" onchange="loadAccueilImage(event)">
 <button onclick="saveAccueil()">Enregistrer Accueil</button>
 </div>
 </section>
@@ -95,7 +94,8 @@ section.visible { display:block; }
 <div class="admin-panel">
 <h3>Admin Galerie</h3>
 <div id="galleryAdmin"></div>
-<button onclick="renderGalleryAdmin()">Rafraîchir Galerie</button>
+<input type="file" id="addGalleryFile" accept="image/*">
+<button onclick="addGalleryImage()">Ajouter une image</button>
 </div>
 </section>
 
@@ -123,7 +123,12 @@ section.visible { display:block; }
 </div>
 
 <script>
-let galleryData = [];
+let galleryData = [
+  {image: 'https://i.imgur.com/pyK8b0X.jpeg'},
+  {image: 'https://i.imgur.com/4SZW6Cf.jpeg'},
+  {image: 'https://i.imgur.com/T1VJc1o.jpeg'}
+];
+let accueilImage = "https://i.imgur.com/pyK8b0X.jpeg";
 
 // Section toggle
 function openSection(id){
@@ -138,33 +143,46 @@ function openLightbox(src){
   document.getElementById('lightbox').style.display='flex';
 }
 
-// Accueil image locale
+// Accueil image
 function loadAccueilImage(event){
   const file = event.target.files[0];
   if(file){
     const reader = new FileReader();
-    reader.onload = e => { document.getElementById('imgAccueil').src = e.target.result; };
+    reader.onload = e => { 
+      document.getElementById('imgAccueil').src = e.target.result;
+      accueilImage = e.target.result;
+    };
     reader.readAsDataURL(file);
   }
 }
-
-// Admin functions
 function saveAccueil(){
-  document.getElementById('textAccueil').innerText = document.getElementById('editAccueil').value || '[Histoire du sculpteur malgache, 5 lignes modifiables]';
+  const val = document.getElementById('editAccueil').value;
+  if(val) document.getElementById('textAccueil').innerText = val;
 }
+
+// À propos
 function saveApropos(){
-  document.getElementById('textApropos').innerText = document.getElementById('editApropos').value || 'Artisan sculpteur passionné, spécialisé dans les œuvres traditionnelles et modernes.';
+  const val = document.getElementById('editApropos').value;
+  if(val) document.getElementById('textApropos').innerText = val;
 }
+
+// Services
 function saveServices(){
   const services = document.getElementById('editServices').value.split("\n").filter(Boolean)
     .map(s=>`<div class="service-card">${s}</div>`).join('');
-  document.getElementById('listServices').innerHTML = services;
+  if(services) document.getElementById('listServices').innerHTML = services;
 }
+
+// Contact
 function saveContact(){
-  document.getElementById('contactEmail').innerText = document.getElementById('editEmail').value || 'sculpture@example.com';
-  document.getElementById('contactTel').innerText = document.getElementById('editTel').value || '+261 34 00 000 00';
-  document.getElementById('contactFB').innerText = document.getElementById('editFB').value || 'facebook.com/sculpture';
-  document.getElementById('contactWA').innerText = document.getElementById('editWA').value || '+261 34 00 000 00';
+  const e=document.getElementById('editEmail').value;
+  const t=document.getElementById('editTel').value;
+  const f=document.getElementById('editFB').value;
+  const w=document.getElementById('editWA').value;
+  if(e) document.getElementById('contactEmail').innerText=e;
+  if(t) document.getElementById('contactTel').innerText=t;
+  if(f) document.getElementById('contactFB').innerText=f;
+  if(w) document.getElementById('contactWA').innerText=w;
 }
 
 // Galerie
@@ -174,7 +192,6 @@ function renderGallery(){
     `<img src="${item.image}" onclick="openLightbox('${item.image}')">`
   ).join('');
 }
-
 function renderGalleryAdmin(){
   const container = document.getElementById('galleryAdmin');
   container.innerHTML = '';
@@ -189,7 +206,6 @@ function renderGalleryAdmin(){
     container.appendChild(div);
   });
 }
-
 function updateGalleryImage(event,index){
   const file = event.target.files[0];
   if(file){
@@ -202,7 +218,6 @@ function updateGalleryImage(event,index){
     reader.readAsDataURL(file);
   }
 }
-
 function deleteGalleryImage(index){
   if(confirm('Voulez-vous supprimer cette image ?')){
     galleryData.splice(index,1);
@@ -210,10 +225,24 @@ function deleteGalleryImage(index){
     renderGalleryAdmin();
   }
 }
+function addGalleryImage(){
+  const fileInput = document.getElementById('addGalleryFile');
+  const file = fileInput.files[0];
+  if(file){
+    const reader = new FileReader();
+    reader.onload = e=>{
+      galleryData.push({image:e.target.result});
+      renderGallery();
+      renderGalleryAdmin();
+      fileInput.value='';
+    };
+    reader.readAsDataURL(file);
+  } else alert('Veuillez sélectionner une image.');
+}
 
 // Initialisation
 document.addEventListener('DOMContentLoaded',()=>{
-  galleryData = [];
+  document.getElementById('imgAccueil').src = accueilImage;
   renderGallery();
   renderGalleryAdmin();
 });
