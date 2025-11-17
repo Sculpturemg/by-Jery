@@ -1,3 +1,93 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sculpture MG — Galerie</title>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background: #f9f4ee;
+        color: #333;
+    }
+    header {
+        display: flex;
+        justify-content: space-between;
+        padding: 15px 25px;
+        align-items: center;
+        background: #fff;
+        border-bottom: 1px solid #ddd;
+        position: sticky;
+        top: 0;
+    }
+    h1, h2, h3 {
+        margin: 15px 0;
+    }
+    .btn {
+        background: #e67c35;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 6px;
+        border: none;
+        cursor: pointer;
+        font-size: 15px;
+    }
+    .gallery {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        padding: 20px;
+    }
+    .card {
+        background: #fff;
+        border-radius: 10px;
+        padding: 10px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+    .card img {
+        width: 100%;
+        border-radius: 10px;
+    }
+    #adminPanel {
+        display: none;
+        background: #fff;
+        padding: 20px;
+        margin: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    #loginPanel {
+        padding: 20px;
+        max-width: 300px;
+        margin: 20px auto;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+    .input {
+        width: 100%;
+        padding: 10px;
+        margin-top: 10px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+    }
+</style>
+</head>
+
+<body>
+
+<header>
+    <h2>Sculpture MG</h2>
+    <button class="btn" onclick="showLogin()">Connexion</button>
+</header>
+
+<section style="padding: 20px;">
+    <h1>L'Art de la Sculpture Malgache</h1>
+    <p>Découvrez des œuvres uniques sculptées avec passion…</p>
+</section>
 <!doctype html>
 <html lang="fr">
 <head>
@@ -405,4 +495,35 @@ let DATA = {
         }
     ]
 };
+</script>
+<!-- Part 2 start -->
+<script>
+// Panneau admin
+const adminPanel = document.getElementById('adminPanel');
+const adminBtn = document.getElementById('adminBtn');
+const saveBtn = document.getElementById('saveChangesBtn');
+const addBtn = document.getElementById('addArtworkBtn');
+const works = document.getElementById('works');
+
+adminBtn?.addEventListener('click', () => {
+  adminPanel.classList.toggle('hidden');
+});
+
+addBtn?.addEventListener('click', () => {
+  const newItem = document.createElement('div');
+  newItem.className = 'bg-white p-4 rounded shadow';
+  newItem.innerHTML = `
+    <input type="text" placeholder="Titre" class="border p-1 mb-2 w-full">
+    <input type="text" placeholder="URL de l'image" class="border p-1 mb-2 w-full">
+    <textarea placeholder="Description" class="border p-1 w-full mb-2"></textarea>
+    <button class="bg-red-500 text-white px-2 py-1 w-full deleteBtn">Supprimer</button>
+  `;
+  works.appendChild(newItem);
+});
+
+document.addEventListener('click', (e) => {
+  if (e.target.classList.contains('deleteBtn')) {
+    e.target.parentElement.remove();
+  }
+});
 </script>
