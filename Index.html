@@ -5,198 +5,230 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sculpture MG — Galerie</title>
 <style>
-:root{--bg:#fff8f2;--accent:#ef7e2f;--muted:#555;--card:#fff;--glass:rgba(255,255,255,0.6);}
-*{box-sizing:border-box;}
-body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:#222;}
-header{display:flex;justify-content:space-between;align-items:center;padding:16px 24px;border-bottom:1px solid rgba(0,0,0,0.05);}
-header .brand{display:flex;align-items:center;gap:12px;}
-header .logo{width:44px;height:44px;background:var(--accent);color:white;display:flex;justify-content:center;align-items:center;font-weight:700;border-radius:10px;}
-header nav{display:flex;gap:12px;flex-wrap:wrap;}
-header nav button{padding:10px 18px;border-radius:999px;border:none;background:var(--accent);color:white;cursor:pointer;font-weight:600;transition:0.3s;}
-header nav button:hover{transform:translateY(-2px);background:#d96b1f;}
-header nav .btn-outline{background:transparent;border:2px solid var(--accent);color:var(--accent);}
-header nav .btn-outline:hover{background:var(--accent);color:white;}
-main{padding:28px;}
-h1{font-size:36px;color:#cc5b00;margin:0 0 12px;}
-h2{color:#ef7e2f;}
-section{margin-bottom:28px;}
-.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;}
-.card{background:var(--card);border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,0.06);overflow:hidden;transition:0.3s;}
-.card:hover{transform:translateY(-4px);box-shadow:0 12px 24px rgba(0,0,0,0.12);}
-.card img{width:100%;height:180px;object-fit:cover;transition:0.3s;}
-.card-body{padding:12px;}
-.title{font-weight:700;margin-bottom:6px;}
-.desc{font-size:14px;color:var(--muted);margin-bottom:8px;}
-.price{font-weight:700;color:var(--accent);}
-.btn{cursor:pointer;border:0;padding:12px 20px;border-radius:999px;background:var(--accent);color:#fff;font-weight:600;transition:0.3s;}
-.btn:hover{transform:translateY(-2px);background:#d96b1f;}
-.btn-outline{background:transparent;border:2px solid var(--accent);color:var(--accent);}
-.btn-outline:hover{background:var(--accent);color:white;}
-input,textarea,select{padding:10px;border-radius:8px;border:1px solid rgba(0,0,0,0.1);width:100%;}
-textarea{min-height:80px;}
-.admin-area{padding:12px;background:rgba(255,255,255,0.95);border-radius:10px;display:none;}
-.modal{position:fixed;inset:0;background:rgba(0,0,0,0.45);display:none;align-items:center;justify-content:center;padding:20px;z-index:1000;}
+:root {
+  --bg:#ffffff; --accent:#2e7d32; --muted:#555; --card:#f9f9f9; --glass: rgba(255,255,255,0.7);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:#222;}
+header{display:flex;justify-content:space-between;align-items:center;padding:15px 20px;border-bottom:1px solid rgba(0,0,0,0.05);}
+header .brand{font-weight:700;font-size:1.3rem;color:var(--accent);}
+nav button{margin-left:10px;padding:8px 16px;border:none;border-radius:999px;background:var(--accent);color:#fff;cursor:pointer;}
+nav button.outline{background:transparent;border:2px solid var(--accent);color:var(--accent);}
+main{padding:20px;}
+h1,h2,h3,h4{color:var(--accent);}
+button{cursor:pointer;}
+.hero{display:flex;flex-direction:column;gap:15px;text-align:center;margin-bottom:30px;}
+.actions{display:flex;gap:10px;justify-content:center;}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:15px;}
+.card{background:var(--card);border-radius:12px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,0.05);}
+.card img{width:100%;height:180px;object-fit:cover;}
+.card-body{padding:10px;}
+.card-body .title{font-weight:700;}
+.card-body .desc{font-size:14px;color:var(--muted);}
+.card-body .price{font-weight:700;color:var(--accent);}
+.modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.45);padding:15px;}
 .modal.open{display:flex;}
-.panel{background:white;padding:18px;border-radius:12px;max-width:500px;width:100%;}
-@media(max-width:600px){header nav{flex-direction:column;}}
+.panel{background:white;padding:15px;border-radius:12px;max-width:600px;width:100%;}
+input, textarea, select{width:100%;padding:8px;margin-bottom:10px;border-radius:8px;border:1px solid #ccc;}
+#adminPanel{background:linear-gradient(180deg,rgba(255,255,255,0.9),rgba(255,255,255,0.95));padding:15px;border-radius:10px;margin-top:20px;display:none;}
+footer{padding:20px;border-top:1px solid rgba(0,0,0,0.1);text-align:center;color:var(--muted);}
+@media(min-width:768px){.hero{flex-direction:row;justify-content:space-between;text-align:left;}}
+.smallBtn{padding:5px 10px;border-radius:6px;margin:3px;background:var(--accent);color:#fff;border:none;cursor:pointer;}
 </style>
 </head>
 <body>
 
 <header>
-  <div class="brand">
-    <div class="logo">S</div>
-    <div>
-      <div style="font-weight:700">Sculpture MG</div>
-      <div style="font-size:13px;color:var(--muted)">L'Art de la Sculpture Malgache</div>
-    </div>
-  </div>
+  <div class="brand">Sculpture MG</div>
   <nav>
-    <button onclick="showSection('home')">Accueil</button>
-    <button onclick="showSection('gallerySection')">Galerie</button>
-    <button onclick="showSection('about')">À propos</button>
-    <button onclick="showSection('contact')">Contact</button>
-    <button class="btn-outline" onclick="openLogin()">Connexion</button>
+    <button id="btnAccueil">Accueil</button>
+    <button id="btnGalerie">Galerie</button>
+    <button id="btnApropos">À propos</button>
+    <button id="btnContact">Contact</button>
+    <button id="btnConnexion" class="outline">Connexion</button>
   </nav>
 </header>
 
 <main>
-<section id="home">
-  <h1>Biographie du sculpteur Malagasy</h1>
-  <p id="bioText">Né à Madagascar, le sculpteur MG a façonné le bois et la pierre depuis l'enfance. Passionné par la culture et les légendes locales, il crée des œuvres uniques racontant des histoires traditionnelles. (Texte modifiable par Admin)</p>
-  <div style="margin-top:20px;">
-    <button class="btn" onclick="scrollToOrder()">Commander une œuvre →</button>
-    <button class="btn-outline" onclick="showSection('gallerySection')">Explorer la Galerie</button>
-  </div>
+  <!-- Accueil -->
+  <section id="sectionAccueil" class="hero">
+    <div>
+      <h1>Biographie du sculpteur malgache</h1>
+      <p id="bioText">[Texte modifiable par l’admin] Découvrez l’histoire de l’art malgache et ses sculptures uniques en bois et pierre, créées avec passion et savoir-faire ancestral.</p>
+      <div class="actions">
+        <button id="btnCommander">Commander une œuvre</button>
+        <button id="btnVoirGalerie">Explorer la galerie</button>
+      </div>
+    </div>
+  </section>
 
-  <section id="sectionOrder" style="margin-top:28px; padding:20px; background:#fff8f2; border-radius:12px; box-shadow:0 6px 18px rgba(0,0,0,0.06);">
+  <!-- Galerie -->
+  <section id="sectionGalerie" style="display:none;">
+    <h2>Galerie d'œuvres</h2>
+    <div id="gallery" class="gallery"></div>
+  </section>
+
+  <!-- Commander -->
+  <section id="sectionCommande" style="display:none;">
     <h2>Commander une œuvre</h2>
-    <form id="orderForm" onsubmit="return false" style="display:grid; gap:12px;">
-      <input type="text" id="orderName" placeholder="Votre Nom" required>
-      <input type="email" id="orderEmail" placeholder="Votre E-mail" required>
-      <textarea id="orderDetails" placeholder="Détails de la commande (matière, style, dimensions…)"></textarea>
-      <select id="orderPayment">
-        <option>Virement bancaire</option>
-        <option>Orange Money</option>
+    <form id="commandeForm" onsubmit="return false">
+      <input type="text" id="c_nom" placeholder="Votre nom" required>
+      <input type="email" id="c_email" placeholder="Votre e-mail" required>
+      <select id="c_type">
+        <option value="">Sélectionner le type de sculpture</option>
+        <option value="bois">Bois</option>
+        <option value="pierre">Pierre</option>
+        <option value="mixtes">Mixtes</option>
       </select>
-      <button class="btn" onclick="alert('Commande envoyée (démo)')">Envoyer la commande</button>
+      <input type="text" id="c_taille" placeholder="Taille / Dimension">
+      <textarea id="c_msg" placeholder="Message / détails"></textarea>
+      <select id="c_paiement">
+        <option value="">Moyen de paiement</option>
+        <option value="virement">Virement bancaire</option>
+        <option value="om">Orange Money</option>
+      </select>
+      <button onclick="envoyerCommande()">Envoyer la commande</button>
     </form>
   </section>
-</section>
 
-<section id="gallerySection" style="display:none;">
-  <h2>Galerie d’œuvres</h2>
-  <div class="gallery" id="galleryGrid"></div>
-</section>
+  <!-- À propos -->
+  <section id="sectionApropos" style="display:none;">
+    <h2>À propos du sculpteur</h2>
+    <p id="aproposText">[Texte modifiable par l’admin] L’artiste malgache passionné crée des sculptures uniques inspirées par la nature et la culture malgache. Chaque pièce raconte une histoire.</p>
+  </section>
 
-<section id="about" style="display:none;">
-  <h2>À propos</h2>
-  <p id="aboutText">Cette galerie présente des sculptures malgaches uniques, façonnées par des artistes passionnés. Chaque œuvre reflète la richesse culturelle de Madagascar. (Texte modifiable par Admin)</p>
-</section>
+  <!-- Contact -->
+  <section id="sectionContact" style="display:none;">
+    <h2>Contact</h2>
+    <p>Email: contact@sculpturemg.mg</p>
+    <p>Téléphone: +261 34 00 000 00</p>
+    <p>Facebook: <a href="#">facebook.com/sculpturemg</a></p>
+  </section>
 
-<section id="contact" style="display:none;">
-  <h2>Contact</h2>
-  <p>Email: <span id="contactMail">contact@sculpturemg.example</span><br>
-     Tel: <span id="contactTel">+261 34 00 000 00</span><br>
-     Facebook: <span id="contactFb">fb.com/sculpturemg</span>
-  </p>
-</section>
+  <!-- Admin Panel -->
+  <section id="adminPanel">
+    <h3>Interface Admin</h3>
+    <button onclick="logoutAdmin()">Déconnexion</button>
+    <h4>Modifier Biographie</h4>
+    <textarea id="adminBio"></textarea>
+    <button onclick="saveBio()">Enregistrer biographie</button>
+    <h4>Galerie</h4>
+    <div id="adminGallery"></div>
+    <input type="file" id="adminFile" accept="image/*">
+    <input type="text" id="adminTitle" placeholder="Titre">
+    <input type="text" id="adminDesc" placeholder="Description">
+    <input type="text" id="adminPrice" placeholder="Prix">
+    <button onclick="uploadArtwork()">Ajouter sculpture</button>
+  </section>
+</main>
 
-<div class="admin-area" id="adminPanel">
-  <h3>Interface Admin</h3>
-  <button onclick="logoutAdmin()">Déconnexion</button>
-  <hr>
-  <h4>Modifier textes</h4>
-  <textarea id="adminBio" placeholder="Biographie"></textarea>
-  <textarea id="adminAbout" placeholder="À propos"></textarea>
-  <textarea id="adminContactMail" placeholder="Email"></textarea>
-  <textarea id="adminContactTel" placeholder="Téléphone"></textarea>
-  <textarea id="adminContactFb" placeholder="Facebook"></textarea>
-  <button onclick="saveAdminChanges()">Enregistrer</button>
-  <hr>
-  <h4>Œuvres</h4>
-  <input type="file" id="adminArtworkFile">
-  <input type="text" id="adminArtworkTitle" placeholder="Titre">
-  <input type="text" id="adminArtworkDesc" placeholder="Description">
-  <input type="text" id="adminArtworkPrice" placeholder="Prix">
-  <button onclick="addArtwork()">Ajouter une œuvre</button>
-</div>
-
-<footer style="padding:28px;border-top:1px solid rgba(0,0,0,0.04);">
-  <div style="display:flex;justify-content:space-between;flex-wrap:wrap;">
-    <div>© <span id="year"></span> Sculpture MG</div>
-    <div style="color:var(--muted)">Fait avec ❤️ à Madagascar</div>
-  </div>
+<footer>
+  © <span id="year"></span> Sculpture MG — Fait avec ❤️ à Madagascar
 </footer>
 
-<div id="loginModal" class="modal">
+<!-- Modal Connexion -->
+<div id="modalConnexion" class="modal">
   <div class="panel">
-    <h3>Connexion / Inscription</h3>
-    <input type="email" id="loginEmail" placeholder="E-mail">
-    <input type="password" id="loginPass" placeholder="Mot de passe">
-    <div style="display:flex;gap:8px;margin-top:12px;">
-      <button class="btn" onclick="loginAdmin()">Connexion Admin</button>
-      <button class="btn-outline" onclick="registerUser()">Créer un compte client</button>
-      <button class="btn-outline" onclick="closeLogin()">Annuler</button>
-    </div>
+    <h3>Connexion</h3>
+    <select id="roleSelect">
+      <option value="client">Client / Visiteur</option>
+      <option value="admin">Admin</option>
+    </select>
+    <input type="email" id="loginEmail" placeholder="E-mail (client)">
+    <input type="password" id="loginPwd" placeholder="Mot de passe (admin)">
+    <button onclick="login()">Se connecter</button>
+    <button onclick="closeModal()">Annuler</button>
   </div>
 </div>
 
 <script>
-// Gestion menu & sections
-const yearEl=document.getElementById('year');
-yearEl.textContent=new Date().getFullYear();
-function showSection(id){['home','gallerySection','about','contact'].forEach(s=>document.getElementById(s).style.display='none');document.getElementById(id).style.display='block';}
-function scrollToOrder(){showSection('home');document.getElementById('sectionOrder').scrollIntoView({behavior:'smooth'});}
-
-// Galerie provisoire
-let galleryData=JSON.parse(localStorage.getItem('galleryData'))||[
-  {title:'Sculpture Ancestrale',desc:'Bois sculpté, 45cm',price:'120 000 MGA',image:'https://images.unsplash.com/photo-1526318472351-c75fcf0700c4?auto=format&fit=crop&w=800&q=60'},
-  {title:'Tête de Roi',desc:'Pierre gravée',price:'200 000 MGA',image:'https://images.unsplash.com/photo-1526481280698-9f2f7c5d7b23?auto=format&fit=crop&w=800&q=60'},
-  {title:'Sculpture visage',desc:'Bois naturel',price:'100 000 MGA',image:'https://images.unsplash.com/photo-1549887534-5a7f75c5c964?auto=format&fit=crop&w=800&q=60'},
-  {title:'Statue traditionnelle',desc:'Bois massif',price:'150 000 MGA',image:'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=800&q=60'},
-  {title:'Visage sculpté',desc:'Tronc d’arbre',price:'130 000 MGA',image:'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=800&q=60'},
-  {title:'Sculpture rustique',desc:'Style ancien',price:'90 000 MGA',image:'https://images.unsplash.com/photo-1549887534-5a7f75c5c964?auto=format&fit=crop&w=800&q=60'},
-  {title:'Tête en pierre',desc:'Art traditionnel',price:'200 000 MGA',image:'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=800&q=60'},
-  {title:'Sculpture moderne',desc:'Bois poli',price:'180 000 MGA',image:'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&w=800&q=60'},
-  {title:'Oeuvre unique',desc:'Fait main',price:'170 000 MGA',image:'https://images.unsplash.com/photo-1526318472351-c75fcf0700c4?auto=format&fit=crop&w=800&q=60'},
-  {title:'Figurine malgache',desc:'Bois sculpté',price:'110 000 MGA',image:'https://images.unsplash.com/photo-1526481280698-9f2f7c5d7b23?auto=format&fit=crop&w=800&q=60'}
+// ==== Variables ====
+let isAdmin=false;
+const galleryData=[
+  {title:'Sculpture 1',desc:'Bois sculpté, 45cm',price:'120 000 MGA',image:'https://images.unsplash.com/photo-1606312610640-82d31ff16d92?auto=format&fit=crop&w=800&q=60'},
+  {title:'Sculpture 2',desc:'Pierre gravée',price:'200 000 MGA',image:'https://images.unsplash.com/photo-1613491361510-1e25d02bafaa?auto=format&fit=crop&w=800&q=60'},
+  {title:'Sculpture 3',desc:'Bois et pierre',price:'150 000 MGA',image:'https://images.unsplash.com/photo-1606813908712-7aa1b2aa73b5?auto=format&fit=crop&w=800&q=60'},
+  {title:'Sculpture 4',desc:'Sculpture artisanale',price:'180 000 MGA',image:'https://images.unsplash.com/photo-1612831455548-37838c82ec34?auto=format&fit=crop&w=800&q=60'},
+  {title:'Sculpture 5',desc:'Sculpture traditionnelle',price:'210 000 MGA',image:'https://images.unsplash.com/photo-1602756467346-2f5988e5c1bb?auto=format&fit=crop&w=800&q=60'},
+  {title:'Sculpture 6',desc:'Visage sculpté',price:'190 000 MGA',image:'https://images.unsplash.com/photo-1582828745309-9ef35c45a038?auto=format&fit=crop&w=800&q=60'},
+  {title:'Sculpture 7',desc:'Art malgache',price:'170 000 MGA',image:'https://images.unsplash.com/photo-1613295960283-66e0c2a20a91?auto=format&fit=crop&w=800&q=60'},
+  {title:'Sculpture 8',desc:'Bois ancien',price:'200 000 MGA',image:'https://images.unsplash.com/photo-1597699405647-196c5d611257?auto=format&w=800&q=60'},
+  {title:'Sculpture 9',desc:'Pierre ancestrale',price:'220 000 MGA',image:'https://images.unsplash.com/photo-1612831431981-f2d5ad7e689f?auto=format&fit=crop&w=800&q=60'},
+  {title:'Sculpture 10',desc:'Œuvre unique',price:'250 000 MGA',image:'https://images.unsplash.com/photo-1597699405517-8b0e9e88a3ff?auto=format&fit=crop&w=800&q=60'}
 ];
-function renderGallery(){const grid=document.getElementById('galleryGrid');grid.innerHTML='';galleryData.forEach(a=>{const card=document.createElement('div');card.className='card';const img=document.createElement('img');img.src=a.image;img.alt=a.title;const body=document.createElement('div');body.className='card-body';body.innerHTML=<div class="title">${a.title}</div><div class="desc">${a.desc}</div><div class="price">${a.price}</div>;card.appendChild(img);card.appendChild(body);grid.appendChild(card);});}
+
+// ==== Initial Render ====
+document.getElementById('year').textContent=new Date().getFullYear();
+const galleryEl=document.getElementById('gallery');
+function renderGallery(){
+  galleryEl.innerHTML='';
+  galleryData.forEach(a=>{
+    const div=document.createElement('div'); div.className='card';
+    div.innerHTML=<img src="${a.image}" alt="${a.title}"><div class="card-body"><div class="title">${a.title}</div><div class="desc">${a.desc}</div><div class="price">${a.price}</div></div>;
+    galleryEl.appendChild(div);
+  });
+}
 renderGallery();
 
-// Admin
-let isAdmin=false;
-const adminPanel=document.getElementById('adminPanel');
-function openLogin(){document.getElementById('loginModal').classList.add('open');}
-function closeLogin(){document.getElementById('loginModal').classList.remove('open');}
-function loginAdmin(){
-  const email=document.getElementById('loginEmail').value;
-  const pass=document.getElementById('loginPass').value;
-  if(email==='admin' && pass==='admin123'){ isAdmin=true; adminPanel.style.display='block'; closeLogin(); alert('Connecté Admin');}
-  else alert('Identifiants incorrects');
+// ==== Navigation ====
+function hideAllSections(){document.querySelectorAll('main section').forEach(s=>s.style.display='none');}
+document.getElementById('btnAccueil').onclick=()=>{hideAllSections();document.getElementById('sectionAccueil').style.display='flex';}
+document.getElementById('btnGalerie').onclick=()=>{hideAllSections();document.getElementById('sectionGalerie').style.display='block';}
+document.getElementById('btnApropos').onclick=()=>{hideAllSections();document.getElementById('sectionApropos').style.display='block';}
+document.getElementById('btnContact').onclick=()=>{hideAllSections();document.getElementById('sectionContact').style.display='block';}
+document.getElementById('btnVoirGalerie').onclick=()=>{hideAllSections();document.getElementById('sectionGalerie').style.display='block';}
+document.getElementById('btnCommander').onclick=()=>{hideAllSections();document.getElementById('sectionCommande').style.display='block';}
+
+// ==== Modal Connexion ====
+const modal=document.getElementById('modalConnexion');
+document.getElementById('btnConnexion').onclick=()=>{modal.classList.add('open');}
+function closeModal(){modal.classList.remove('open');}
+
+// ==== Login ====
+function login(){
+  const role=document.getElementById('roleSelect').value;
+  if(role==='admin'){
+    const pwd=document.getElementById('loginPwd').value;
+    if(pwd==='admin123'){isAdmin=true;alert('Connecté en tant Admin');modal.classList.remove('open');document.getElementById('adminPanel').style.display='block';document.getElementById('adminBio').value=document.getElementById('bioText').innerText;}
+    else{alert('Mot de passe incorrect');}
+  } else {
+    const email=document.getElementById('loginEmail').value;
+    if(email){alert('Connecté en tant que client : '+email);modal.classList.remove('open');}
+    else{alert('Veuillez entrer votre e-mail');}
+  }
 }
-function registerUser(){ alert('Compte client créé (démo)'); }
-function logoutAdmin(){ isAdmin=false; adminPanel.style.display='none'; alert('Déconnecté'); }
-function saveAdminChanges(){
-  document.getElementById('bioText').innerText=document.getElementById('adminBio').value;
-  document.getElementById('aboutText').innerText=document.getElementById('adminAbout').value;
-  document.getElementById('contactMail').innerText=document.getElementById('adminContactMail').value;
-  document.getElementById('contactTel').innerText=document.getElementById('adminContactTel').value;
-  document.getElementById('contactFb').innerText=document.getElementById('adminContactFb').value;
-  alert('Modifications enregistrées');
-}
-function addArtwork(){
-  const file=document.getElementById('adminArtworkFile').files[0];
-  const title=document.getElementById('adminArtworkTitle').value;
-  const desc=document.getElementById('adminArtworkDesc').value;
-  const price=document.getElementById('adminArtworkPrice').value;
-  if(!title||!file){alert('Titre et image obligatoires');return;}
+
+// ==== Admin Functions ====
+function saveBio(){const val=document.getElementById('adminBio').value;document.getElementById('bioText').innerText=val;alert('Biographie sauvegardée !');}
+function logoutAdmin(){isAdmin=false;document.getElementById('adminPanel').style.display='none';alert('Déconnecté');}
+function uploadArtwork(){
+  if(!isAdmin){alert('Seul l’admin peut ajouter des œuvres');return;}
+  const file=document.getElementById('adminFile').files[0];
+  const titre=document.getElementById('adminTitle').value;
+  const desc=document.getElementById('adminDesc').value;
+  const prix=document.getElementById('adminPrice').value;
+  if(!file || !titre || !desc || !prix){alert('Remplissez tous les champs et sélectionnez une image'); return;}
   const reader=new FileReader();
-  reader.onload=e=>{ galleryData.unshift({title,desc,price,image:e.target.result}); renderGallery(); alert('Œuvre ajoutée');};
+  reader.onload=e=>{
+    const newArt={title:titre,desc:desc,price:prix,image:e.target.result};
+    galleryData.push(newArt);
+    renderGallery();
+    alert('Sculpture ajoutée !');
+  }
   reader.readAsDataURL(file);
 }
-</script>
 
+// ==== Commande Form ====
+function envoyerCommande(){
+  const nom=document.getElementById('c_nom').value;
+  const email=document.getElementById('c_email').value;
+  const type=document.getElementById('c_type').value;
+  const taille=document.getElementById('c_taille').value;
+  const msg=document.getElementById('c_msg').value;
+  const paiement=document.getElementById('c_paiement').value;
+  if(!nom||!email||!type||!paiement){alert('Veuillez remplir tous les champs obligatoires');return;}
+  alert(Commande reçue !\nNom: ${nom}\nEmail: ${email}\nType: ${type}\nTaille: ${taille}\nPaiement: ${paiement}\nMessage: ${msg});
+}
+</script>
 </body>
 </html>
