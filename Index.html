@@ -1,202 +1,201 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Sculpture MG</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sculpture MG — Galerie</title>
 <style>
-:root {
-  --bg:#fff8f2; --accent:#ef7e2f; --muted:#555; --card:#fff;
-}
+:root{--bg:#fff8f2;--accent:#ef7e2f;--muted:#555;--card:#fff;--glass:rgba(255,255,255,0.6);}
 *{box-sizing:border-box;}
 body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:#222;}
-header{display:flex;justify-content:space-between;align-items:center;padding:20px;background:white;box-shadow:0 2px 6px rgba(0,0,0,0.1);}
-header .brand{font-weight:700;color:var(--accent);font-size:24px;}
-nav button{margin-left:12px;padding:8px 16px;border:none;background:var(--accent);color:white;border-radius:6px;cursor:pointer;font-weight:600;}
-main{padding:40px;}
-section{margin-bottom:60px;}
-.btn-outline{padding:10px 20px;border:2px solid var(--accent);background:transparent;color:var(--accent);border-radius:999px;cursor:pointer;font-weight:600;}
-.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:24px;}
-.card{background:var(--card);border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.1);overflow:hidden;transition:transform 0.2s;}
-.card:hover{transform:translateY(-4px);}
-.card img{width:100%;height:160px;object-fit:cover;}
-.card-body{padding:16px;}
-.title{font-weight:700;margin-bottom:8px;}
-.desc{color:var(--muted);margin-bottom:8px;}
-.price{color:var(--accent);font-weight:600;}
-footer{padding:20px;text-align:center;color:var(--muted);}
-.admin-panel{position:fixed;top:20px;left:20px;background:white;padding:20px;box-shadow:0 4px 12px rgba(0,0,0,0.2);z-index:1000;max-height:90vh;overflow:auto;}
-.admin-panel h3{margin-top:0;}
-.admin-list div{margin-bottom:10px;padding:10px;border:1px solid #ccc;border-radius:10px;}
-.admin-list button{margin-left:5px;}
-textarea,input{margin-bottom:6px;}
+header{display:flex;justify-content:space-between;align-items:center;padding:16px 24px;border-bottom:1px solid rgba(0,0,0,0.05);}
+header .brand{display:flex;align-items:center;gap:12px;}
+header .logo{width:44px;height:44px;background:var(--accent);color:white;display:flex;justify-content:center;align-items:center;font-weight:700;border-radius:10px;}
+header nav{display:flex;gap:12px;flex-wrap:wrap;}
+header nav button{padding:10px 18px;border-radius:999px;border:none;background:var(--accent);color:white;cursor:pointer;font-weight:600;transition:0.3s;}
+header nav button:hover{transform:translateY(-2px);background:#d96b1f;}
+header nav .btn-outline{background:transparent;border:2px solid var(--accent);color:var(--accent);}
+header nav .btn-outline:hover{background:var(--accent);color:white;}
+main{padding:28px;}
+h1{font-size:36px;color:#cc5b00;margin:0 0 12px;}
+h2{color:#ef7e2f;}
+section{margin-bottom:28px;}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;}
+.card{background:var(--card);border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,0.06);overflow:hidden;transition:0.3s;}
+.card:hover{transform:translateY(-4px);box-shadow:0 12px 24px rgba(0,0,0,0.12);}
+.card img{width:100%;height:180px;object-fit:cover;transition:0.3s;}
+.card-body{padding:12px;}
+.title{font-weight:700;margin-bottom:6px;}
+.desc{font-size:14px;color:var(--muted);margin-bottom:8px;}
+.price{font-weight:700;color:var(--accent);}
+.btn{cursor:pointer;border:0;padding:12px 20px;border-radius:999px;background:var(--accent);color:#fff;font-weight:600;transition:0.3s;}
+.btn:hover{transform:translateY(-2px);background:#d96b1f;}
+.btn-outline{background:transparent;border:2px solid var(--accent);color:var(--accent);}
+.btn-outline:hover{background:var(--accent);color:white;}
+input,textarea,select{padding:10px;border-radius:8px;border:1px solid rgba(0,0,0,0.1);width:100%;}
+textarea{min-height:80px;}
+.admin-area{padding:12px;background:rgba(255,255,255,0.95);border-radius:10px;display:none;}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,0.45);display:none;align-items:center;justify-content:center;padding:20px;z-index:1000;}
+.modal.open{display:flex;}
+.panel{background:white;padding:18px;border-radius:12px;max-width:500px;width:100%;}
+@media(max-width:600px){header nav{flex-direction:column;}}
 </style>
 </head>
 <body>
 
 <header>
-  <div class="brand">Sculpture MG</div>
+  <div class="brand">
+    <div class="logo">S</div>
+    <div>
+      <div style="font-weight:700">Sculpture MG</div>
+      <div style="font-size:13px;color:var(--muted)">L'Art de la Sculpture Malgache</div>
+    </div>
+  </div>
   <nav>
     <button onclick="showSection('home')">Accueil</button>
-    <button onclick="showSection('gallery')">Galerie</button>
+    <button onclick="showSection('gallerySection')">Galerie</button>
     <button onclick="showSection('about')">À propos</button>
     <button onclick="showSection('contact')">Contact</button>
-    <button onclick="openAdmin()">Admin</button>
+    <button class="btn-outline" onclick="openLogin()">Connexion</button>
   </nav>
 </header>
 
 <main>
-  <!-- Accueil -->
-  <section id="home">
-    <h1>Bienvenue chez Sculpture MG</h1>
-    <p id="bioText">Biographie de l’artiste ici...</p>
-    <div style="margin-top:24px;">
-      <button class="btn-outline" onclick="alert('Commande de démonstration')">Commander une œuvre</button>
-      <button class="btn-outline" onclick="showSection('gallery')">Explorer la Galerie →</button>
-    </div>
-  </section>
+<section id="home">
+  <h1>Biographie du sculpteur Malagasy</h1>
+  <p id="bioText">Né à Madagascar, le sculpteur MG a façonné le bois et la pierre depuis l'enfance. Passionné par la culture et les légendes locales, il crée des œuvres uniques racontant des histoires traditionnelles. (Texte modifiable par Admin)</p>
+  <div style="margin-top:20px;">
+    <button class="btn" onclick="scrollToOrder()">Commander une œuvre →</button>
+    <button class="btn-outline" onclick="showSection('gallerySection')">Explorer la Galerie</button>
+  </div>
 
-  <!-- Galerie -->
-  <section id="gallery" style="display:none;">
-    <h2>Galerie d'œuvres</h2>
-    <div id="galleryGrid" class="gallery"></div>
+  <section id="sectionOrder" style="margin-top:28px; padding:20px; background:#fff8f2; border-radius:12px; box-shadow:0 6px 18px rgba(0,0,0,0.06);">
+    <h2>Commander une œuvre</h2>
+    <form id="orderForm" onsubmit="return false" style="display:grid; gap:12px;">
+      <input type="text" id="orderName" placeholder="Votre Nom" required>
+      <input type="email" id="orderEmail" placeholder="Votre E-mail" required>
+      <textarea id="orderDetails" placeholder="Détails de la commande (matière, style, dimensions…)"></textarea>
+      <select id="orderPayment">
+        <option>Virement bancaire</option>
+        <option>Orange Money</option>
+      </select>
+      <button class="btn" onclick="alert('Commande envoyée (démo)')">Envoyer la commande</button>
+    </form>
   </section>
+</section>
 
-  <!-- À propos -->
-  <section id="about" style="display:none;">
-    <h2>À propos de l'artiste</h2>
-    <p id="infoText">Texte à propos ici...</p>
-  </section>
+<section id="gallerySection" style="display:none;">
+  <h2>Galerie d’œuvres</h2>
+  <div class="gallery" id="galleryGrid"></div>
+</section>
 
-  <!-- Contact -->
-  <section id="contact" style="display:none;">
-    <h2>Contact</h2>
-    <p>Email : <span id="contactEmail">contact@sculpturemg.example</span></p>
-    <p>Téléphone : <span id="contactTel">+261 34 00 000 00</span></p>
-    <p>Facebook : <a id="contactFB" href="https://facebook.com/sculpturemg" target="_blank">Sculpture MG</a></p>
-  </section>
-</main>
+<section id="about" style="display:none;">
+  <h2>À propos</h2>
+  <p id="aboutText">Cette galerie présente des sculptures malgaches uniques, façonnées par des artistes passionnés. Chaque œuvre reflète la richesse culturelle de Madagascar. (Texte modifiable par Admin)</p>
+</section>
 
-<footer>
-  © <span id="year"></span> Sculpture MG
+<section id="contact" style="display:none;">
+  <h2>Contact</h2>
+  <p>Email: <span id="contactMail">contact@sculpturemg.example</span><br>
+     Tel: <span id="contactTel">+261 34 00 000 00</span><br>
+     Facebook: <span id="contactFb">fb.com/sculpturemg</span>
+  </p>
+</section>
+
+<div class="admin-area" id="adminPanel">
+  <h3>Interface Admin</h3>
+  <button onclick="logoutAdmin()">Déconnexion</button>
+  <hr>
+  <h4>Modifier textes</h4>
+  <textarea id="adminBio" placeholder="Biographie"></textarea>
+  <textarea id="adminAbout" placeholder="À propos"></textarea>
+  <textarea id="adminContactMail" placeholder="Email"></textarea>
+  <textarea id="adminContactTel" placeholder="Téléphone"></textarea>
+  <textarea id="adminContactFb" placeholder="Facebook"></textarea>
+  <button onclick="saveAdminChanges()">Enregistrer</button>
+  <hr>
+  <h4>Œuvres</h4>
+  <input type="file" id="adminArtworkFile">
+  <input type="text" id="adminArtworkTitle" placeholder="Titre">
+  <input type="text" id="adminArtworkDesc" placeholder="Description">
+  <input type="text" id="adminArtworkPrice" placeholder="Prix">
+  <button onclick="addArtwork()">Ajouter une œuvre</button>
+</div>
+
+<footer style="padding:28px;border-top:1px solid rgba(0,0,0,0.04);">
+  <div style="display:flex;justify-content:space-between;flex-wrap:wrap;">
+    <div>© <span id="year"></span> Sculpture MG</div>
+    <div style="color:var(--muted)">Fait avec ❤️ à Madagascar</div>
+  </div>
 </footer>
 
+<div id="loginModal" class="modal">
+  <div class="panel">
+    <h3>Connexion / Inscription</h3>
+    <input type="email" id="loginEmail" placeholder="E-mail">
+    <input type="password" id="loginPass" placeholder="Mot de passe">
+    <div style="display:flex;gap:8px;margin-top:12px;">
+      <button class="btn" onclick="loginAdmin()">Connexion Admin</button>
+      <button class="btn-outline" onclick="registerUser()">Créer un compte client</button>
+      <button class="btn-outline" onclick="closeLogin()">Annuler</button>
+    </div>
+  </div>
+</div>
+
 <script>
-// Données initiales
-const STORAGE_KEY = 'sculpture_mg_data';
-let DATA = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {
-  bioText: "Sculpture MG, artiste malgache passionné par le bois et la pierre.",
-  infoText: "Artiste sculpteur basé à Madagascar, spécialisé dans les œuvres traditionnelles.",
-  contact: {email:"contact@sculpturemg.example", tel:"+261 34 00 000 00", fb:"https://facebook.com/sculpturemg"},
-  artworks:[
-    {id:1, title:"Sculpture 1", desc:"Bois rouge, 30 cm", price:"80 000 MGA", image:"https://images.unsplash.com/photo-1526318472351-c75fcf0700c4?auto=format&fit=crop&w=800&q=60"},
-    {id:2, title:"Sculpture 2", desc:"Bois clair, 25 cm", price:"70 000 MGA", image:"https://images.unsplash.com/photo-1526481280698-9f2f7c5d7b23?auto=format&fit=crop&w=800&q=60"},
-    {id:3, title:"Sculpture 3", desc:"Pierre gravée, 40 cm", price:"120 000 MGA", image:"https://images.unsplash.com/photo-1560151226-00c16b1a4b0b?auto=format&fit=crop&w=800&q=60"},
-    {id:4, title:"Sculpture 4", desc:"Bois foncé, 35 cm", price:"90 000 MGA", image:"https://images.unsplash.com/photo-1579202673506-ca3ce28943ef?auto=format&fit=crop&w=800&q=60"},
-    {id:5, title:"Sculpture 5", desc:"Motif ancestral, 50 cm", price:"150 000 MGA", image:"https://images.unsplash.com/photo-1564564321837-a57b7070ac4f?auto=format&fit=crop&w=800&q=60"},
-    {id:6, title:"Sculpture 6", desc:"Visage sculpté, 30 cm", price:"85 000 MGA", image:"https://images.unsplash.com/photo-1506807803488-8eafc15339e2?auto=format&fit=crop&w=800&q=60"},
-    {id:7, title:"Sculpture 7", desc:"Forme abstraite, 45 cm", price:"110 000 MGA", image:"https://images.unsplash.com/photo-1493612276216-ee3925520721?auto=format&fit=crop&w=800&q=60"},
-    {id:8, title:"Sculpture 8", desc:"Oiseau stylisé, 38 cm", price:"95 000 MGA", image:"https://images.unsplash.com/photo-1533090161767-e6ffed986c88?auto=format&fit=crop&w=800&q=60"},
-    {id:9, title:"Sculpture 9", desc:"Masque tribal, 42 cm", price:"130 000 MGA", image:"https://images.unsplash.com/photo-1501594907352-04cda38ebc29?auto=format&fit=crop&w=800&q=60"},
-    {id:10, title:"Sculpture 10", desc:"Animal sculpté, 40 cm", price:"100 000 MGA", image:"https://images.unsplash.com/photo-1535747224268-51f99395d8c5?auto=format&fit=crop&w=800&q=60"}
-  ]
-};
+// Gestion menu & sections
+const yearEl=document.getElementById('year');
+yearEl.textContent=new Date().getFullYear();
+function showSection(id){['home','gallerySection','about','contact'].forEach(s=>document.getElementById(s).style.display='none');document.getElementById(id).style.display='block';}
+function scrollToOrder(){showSection('home');document.getElementById('sectionOrder').scrollIntoView({behavior:'smooth'});}
 
-let ADMIN_PASSWORD = localStorage.getItem('adminPassword') || 'admin123';
-document.getElementById('year').innerText = new Date().getFullYear();
-
-function saveData(){
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(DATA));
-  renderAll();
-}
-
-function renderAll(){
-  document.getElementById('bioText').innerText = DATA.bioText;
-  document.getElementById('infoText').innerText = DATA.infoText;
-  document.getElementById('contactEmail').innerText = DATA.contact.email;
-  document.getElementById('contactTel').innerText = DATA.contact.tel;
-  document.getElementById('contactFB').href = DATA.contact.fb;
-
-  const grid = document.getElementById('galleryGrid');
-  grid.innerHTML = '';
-  DATA.artworks.forEach(a=>{
-    const card = document.createElement('div');
-    card.className = 'card';
-    card.innerHTML = `<img src="${a.image}" alt="${a.title}"><div class="card-body">
-      <div class="title">${a.title}</div>
-      <div class="desc">${a.desc}</div>
-      <div class="price">${a.price}</div>
-    </div>`;
-    grid.appendChild(card);
-  });
-}
-
-function showSection(id){
-  ['home','gallery','about','contact'].forEach(sec=>{
-    document.getElementById(sec).style.display = (sec===id?'block':'none');
-  });
-}
+// Galerie provisoire
+let galleryData=JSON.parse(localStorage.getItem('galleryData'))||[
+  {title:'Sculpture Ancestrale',desc:'Bois sculpté, 45cm',price:'120 000 MGA',image:'https://images.unsplash.com/photo-1526318472351-c75fcf0700c4?auto=format&fit=crop&w=800&q=60'},
+  {title:'Tête de Roi',desc:'Pierre gravée',price:'200 000 MGA',image:'https://images.unsplash.com/photo-1526481280698-9f2f7c5d7b23?auto=format&fit=crop&w=800&q=60'},
+  {title:'Sculpture visage',desc:'Bois naturel',price:'100 000 MGA',image:'https://images.unsplash.com/photo-1549887534-5a7f75c5c964?auto=format&fit=crop&w=800&q=60'},
+  {title:'Statue traditionnelle',desc:'Bois massif',price:'150 000 MGA',image:'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=800&q=60'},
+  {title:'Visage sculpté',desc:'Tronc d’arbre',price:'130 000 MGA',image:'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=800&q=60'},
+  {title:'Sculpture rustique',desc:'Style ancien',price:'90 000 MGA',image:'https://images.unsplash.com/photo-1549887534-5a7f75c5c964?auto=format&fit=crop&w=800&q=60'},
+  {title:'Tête en pierre',desc:'Art traditionnel',price:'200 000 MGA',image:'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=800&q=60'},
+  {title:'Sculpture moderne',desc:'Bois poli',price:'180 000 MGA',image:'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&w=800&q=60'},
+  {title:'Oeuvre unique',desc:'Fait main',price:'170 000 MGA',image:'https://images.unsplash.com/photo-1526318472351-c75fcf0700c4?auto=format&fit=crop&w=800&q=60'},
+  {title:'Figurine malgache',desc:'Bois sculpté',price:'110 000 MGA',image:'https://images.unsplash.com/photo-1526481280698-9f2f7c5d7b23?auto=format&fit=crop&w=800&q=60'}
+];
+function renderGallery(){const grid=document.getElementById('galleryGrid');grid.innerHTML='';galleryData.forEach(a=>{const card=document.createElement('div');card.className='card';const img=document.createElement('img');img.src=a.image;img.alt=a.title;const body=document.createElement('div');body.className='card-body';body.innerHTML=<div class="title">${a.title}</div><div class="desc">${a.desc}</div><div class="price">${a.price}</div>;card.appendChild(img);card.appendChild(body);grid.appendChild(card);});}
+renderGallery();
 
 // Admin
-function openAdmin(){
-  const pw = prompt("Mot de passe admin :");
-  if(pw!==ADMIN_PASSWORD){alert("Mot de passe incorrect"); return;}
-  const panel = document.createElement('div'); panel.className='admin-panel';
-  panel.innerHTML = `
-    <h3>Admin Panel</h3>
-    <label>Biographie :</label><br>
-    <textarea id="adminBio" style="width:100%;height:80px;">${DATA.bioText}</textarea><br>
-    <label>Texte À propos :</label><br>
-    <textarea id="adminInfo" style="width:100%;height:80px;">${DATA.infoText}</textarea><br>
-    <label>Email :</label><br><input id="adminEmail" style="width:100%;" value="${DATA.contact.email}"><br>
-    <label>Téléphone :</label><br><input id="adminTel" style="width:100%;" value="${DATA.contact.tel}"><br>
-    <label>Facebook :</label><br><input id="adminFB" style="width:100%;" value="${DATA.contact.fb}"><br>
-    <h4>Ajouter une œuvre</h4>
-    <input id="a_title" placeholder="Titre" style="width:100%;"><br>
-    <input id="a_desc" placeholder="Description" style="width:100%;"><br>
-    <input id="a_price" placeholder="Prix" style="width:100%;"><br>
-    <input id="a_image" placeholder="URL image" style="width:100%;"><br>
-    <button id="addBtn">Ajouter</button>
-    <h4>Œuvres existantes :</h4>
-    <div id="adminList" class="admin-list"></div>
-    <button onclick="this.parentElement.remove()">Fermer</button>
-  `;
-  document.body.appendChild(panel);
-
-  function refreshList(){
-    const list = panel.querySelector('#adminList');
-    list.innerHTML='';
-    DATA.artworks.forEach((a,i)=>{
-      const div = document.createElement('div');
-      div.innerHTML=`<b>${a.title}</b> 
-      <button onclick="deleteArt(${i});refreshList();">Supprimer</button>`;
-      list.appendChild(div);
-    });
-  }
-
-  panel.querySelector('#adminBio').addEventListener('blur',e=>{DATA.bioText=e.target.value; saveData();});
-  panel.querySelector('#adminInfo').addEventListener('blur',e=>{DATA.infoText=e.target.value; saveData();});
-  panel.querySelector('#adminEmail').addEventListener('blur',e=>{DATA.contact.email=e.target.value; saveData();});
-  panel.querySelector('#adminTel').addEventListener('blur',e=>{DATA.contact.tel=e.target.value; saveData();});
-  panel.querySelector('#adminFB').addEventListener('blur',e=>{DATA.contact.fb=e.target.value; saveData();});
-
-  panel.querySelector('#addBtn').onclick=()=>{
-    const t=panel.querySelector('#a_title').value;
-    const d=panel.querySelector('#a_desc').value;
-    const p=panel.querySelector('#a_price').value;
-    const i=panel.querySelector('#a_image').value;
-    if(!t||!i){alert("Titre et image requis");return;}
-    DATA.artworks.push({id:Date.now(),title:t,desc:d,price:p,image:i});
-    saveData();
-    refreshList();
-    panel.querySelector('#a_title').value=''; panel.querySelector('#a_desc').value=''; panel.querySelector('#a_price').value=''; panel.querySelector('#a_image').value='';
-  };
-
-  window.deleteArt=(i)=>{if(confirm("Supprimer cette œuvre ?")){DATA.artworks.splice(i,1); saveData();}};
-  refreshList();
+let isAdmin=false;
+const adminPanel=document.getElementById('adminPanel');
+function openLogin(){document.getElementById('loginModal').classList.add('open');}
+function closeLogin(){document.getElementById('loginModal').classList.remove('open');}
+function loginAdmin(){
+  const email=document.getElementById('loginEmail').value;
+  const pass=document.getElementById('loginPass').value;
+  if(email==='admin' && pass==='admin123'){ isAdmin=true; adminPanel.style.display='block'; closeLogin(); alert('Connecté Admin');}
+  else alert('Identifiants incorrects');
 }
-
-window.onload=()=>{renderAll(); showSection('home');};
+function registerUser(){ alert('Compte client créé (démo)'); }
+function logoutAdmin(){ isAdmin=false; adminPanel.style.display='none'; alert('Déconnecté'); }
+function saveAdminChanges(){
+  document.getElementById('bioText').innerText=document.getElementById('adminBio').value;
+  document.getElementById('aboutText').innerText=document.getElementById('adminAbout').value;
+  document.getElementById('contactMail').innerText=document.getElementById('adminContactMail').value;
+  document.getElementById('contactTel').innerText=document.getElementById('adminContactTel').value;
+  document.getElementById('contactFb').innerText=document.getElementById('adminContactFb').value;
+  alert('Modifications enregistrées');
+}
+function addArtwork(){
+  const file=document.getElementById('adminArtworkFile').files[0];
+  const title=document.getElementById('adminArtworkTitle').value;
+  const desc=document.getElementById('adminArtworkDesc').value;
+  const price=document.getElementById('adminArtworkPrice').value;
+  if(!title||!file){alert('Titre et image obligatoires');return;}
+  const reader=new FileReader();
+  reader.onload=e=>{ galleryData.unshift({title,desc,price,image:e.target.result}); renderGallery(); alert('Œuvre ajoutée');};
+  reader.readAsDataURL(file);
+}
 </script>
 
 </body>
