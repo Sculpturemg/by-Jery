@@ -1,158 +1,272 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Sculpture MG</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>L'Art de la Sculpture Malgache</title>
 <style>
-  body { font-family: Arial, sans-serif; margin: 0; background: #fff8f2; color: #333; }
-  header { background: #ef7e2f; padding: 20px; text-align: center; color: white; }
-  nav { display: flex; justify-content: center; gap: 20px; padding: 10px; background: #333; }
-  nav a { color: white; text-decoration: none; font-weight: bold; }
-  section { padding: 20px; }
-  h2 { color: #ef7e2f; }
-
-  /* Galerie */
-  .gallery-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
-  .gallery-container img { width: 100%; height: 120px; object-fit: cover; border-radius: 8px; cursor: pointer; }
-
-  /* Admin */
-  #admin-section { display: none; }
-  #gallery-actions { display: none; margin-top: 10px; }
-  input, button { padding: 10px; margin: 5px 0; width: 100%; max-width: 300px; }
-  button { background: #ef7e2f; color: white; border: none; cursor: pointer; border-radius: 6px; }
-  button:hover { background: #d86f26; }
-
-  /* Fullscreen image */
-  #fullscreen { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; }
-  #fullscreen img { width: 90%; max-width: 600px; border-radius: 10px; }
+body { margin:0; font-family: Arial, sans-serif; background:#f7f3ef; }
+header { background:#2f2b28; color:white; padding:15px; text-align:center; font-size:22px; font-weight:bold; }
+nav { display:flex; flex-wrap:wrap; justify-content:center; gap:10px; background:#403c38; padding:10px; }
+nav button { padding:10px 15px; background:#d9a066; border:none; color:white; cursor:pointer; border-radius:5px; font-weight:bold; }
+nav button:hover { background:#bb873f; }
+section { display:none; padding:20px; }
+section.visible { display:block; }
+.hero { text-align:center; background:white; padding:20px; border-radius:10px; }
+.hero img { width:100%; max-height:300px; object-fit:cover; border-radius:10px; cursor:pointer; }
+.gallery { display:grid; grid-template-columns:repeat(auto-fill, minmax(150px,1fr)); gap:10px; }
+.gallery img { width:100%; height:150px; object-fit:cover; border-radius:8px; cursor:pointer; transition: transform 0.2s; }
+.gallery img:hover { transform: scale(1.05); }
+.service-card { background:white; padding:15px; border-radius:8px; margin-bottom:15px; box-shadow:0 2px 8px rgba(0,0,0,0.15); transition: transform 0.2s; }
+.service-card:hover { transform: translateY(-5px); box-shadow:0 4px 12px rgba(0,0,0,0.2); }
+.admin-panel { background:#fdf5e6; padding:15px; border-radius:10px; margin-top:10px; display:none; }
+.admin-panel textarea, .admin-panel input { width:100%; padding:10px; margin-bottom:10px; border-radius:5px; border:1px solid #ccc; }
+.admin-panel button { padding:10px 15px; background:#d9a066; border:none; color:white; cursor:pointer; border-radius:5px; font-weight:bold; }
+.admin-panel button:hover { background:#bb873f; }
+.lightbox { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); display:none; align-items:center; justify-content:center; z-index:10000; }
+.lightbox img { max-width:90%; max-height:90%; border-radius:10px; }
+.lightbox:target { display:flex; }
+@media (max-width:600px){
+  nav { flex-direction:column; }
+  .service-card { margin-bottom:10px; }
+}
 </style>
 </head>
 <body>
-<header>
-  <h1>Sculpture MG</h1>
-</header>
+
+<header>L'Art de la Sculpture Malgache</header>
 
 <nav>
-  <a href="#accueil">Accueil</a>
-  <a href="#apropos">À propos</a>
-  <a href="#services">Services</a>
-  <a href="#galerie">Galerie</a>
-  <a href="#contact">Contact</a>
-  <a href="#admin">Admin</a>
+<button onclick="openSection('accueil')">Accueil</button>
+<button onclick="openSection('apropos')">À propos</button>
+<button onclick="openSection('prehistoire')">Pré-histoire</button>
+<button onclick="openSection('services')">Services</button>
+<button onclick="openSection('galerie')">Galerie</button>
+<button onclick="openSection('contact')">Contact</button>
+<button onclick="openLogin()">Admin</button>
 </nav>
 
-<section id="accueil">
-  <h2>Accueil</h2>
-  <p>Bienvenue dans notre univers de sculpture artisanale unique à Madagascar.</p>
-  <img src="nosy.jpg" alt="Nosy Madagascar" style="width:100%;max-width:400px;border-radius:10px;" />
+<!-- ACCUEIL -->
+<section id="accueil" class="hero visible">
+<h2>Bienvenue dans l'univers de la sculpture malgache</h2>
+<img id="imgAccueil" src="" alt="Accueil" onclick="openLightbox(this.src)">
+<p id="textAccueil">Le sculpteur malgache puise son inspiration dans les traditions ancestrales et les légendes locales. Depuis des siècles, l’art de la sculpture transmet la culture, les croyances et l’âme du peuple. Les œuvres sont créées à partir de bois précieux et de pierre, reflétant la vie quotidienne et les rituels. Chaque sculpture raconte une histoire unique, mêlant esthétique et symbolisme. Aujourd’hui, ces artistes perpétuent un héritage culturel exceptionnel, transmis de génération en génération.</p>
+
+<div id="adminAccueil" class="admin-panel">
+<h3>Admin Accueil</h3>
+<textarea id="editAccueil" rows="5"></textarea>
+<input type="file" id="fileAccueil" accept="image/*" onchange="loadAccueilImage(event)">
+<button onclick="saveAccueil()">Enregistrer Accueil</button>
+</div>
 </section>
 
+<!-- À PROPOS -->
 <section id="apropos">
-  <h2>À propos</h2>
-  <p>Nous réalisons des sculptures authentiques, inspirées par la nature et la culture malgache.</p>
+<h2>À propos</h2>
+<p id="textApropos">Artisan sculpteur passionné, spécialisé dans les œuvres traditionnelles et modernes.</p>
+
+<div id="adminApropos" class="admin-panel">
+<h3>Admin À propos</h3>
+<textarea id="editApropos" rows="5"></textarea>
+<button onclick="saveApropos()">Enregistrer À propos</button>
+</div>
 </section>
 
+<!-- PRÉ-HISTOIRE -->
+<section id="prehistoire">
+<h2>Pré-histoire et Origines</h2>
+<p id="textPrehistoire">
+Les premières sculptures malgaches remontent aux siècles précédant l’arrivée des premiers habitants de l’île. Elles représentaient des divinités, des ancêtres ou des esprits de la nature. Chaque région de Madagascar a développé son propre style, influencé par l’environnement et les traditions locales. Aujourd’hui, cet art ancestral continue d’inspirer les artistes contemporains et les expositions internationales.
+</p>
+
+<div id="adminPrehistoire" class="admin-panel">
+<h3>Admin Pré-histoire</h3>
+<textarea id="editPrehistoire" rows="5"></textarea>
+<button onclick="savePrehistoire()">Enregistrer Pré-histoire</button>
+</div>
+</section>
+
+<!-- SERVICES -->
 <section id="services">
-  <h2>Services</h2>
-  <ul>
-    <li>Sculptures personnalisées</li>
-    <li>Décorations artisanales</li>
-    <li>Œuvres en bois, pierre et matériaux naturels</li>
-  </ul>
+<h2>Services</h2>
+<div id="listServices">
+<div class="service-card">Commandes personnalisées</div>
+<div class="service-card">Restauration d'œuvres</div>
+<div class="service-card">Expositions</div>
+<div class="service-card">Ateliers & Formations</div>
+</div>
+
+<div id="adminServices" class="admin-panel">
+<h3>Admin Services</h3>
+<textarea id="editServices" rows="5" placeholder="Une ligne = un service"></textarea>
+<button onclick="saveServices()">Enregistrer Services</button>
+</div>
 </section>
 
+<!-- GALERIE -->
 <section id="galerie">
-  <h2>Galerie</h2>
-  <div class="gallery-container" id="gallery"></div>
+<h2>Galerie</h2>
+<div class="gallery" id="galleryContainer"></div>
 
-  <div id="gallery-actions">
-    <input type="text" id="image-url" placeholder="Lien de l'image" />
-    <button onclick="addImage()">Ajouter</button>
-    <button onclick="clearGallery()">Vider la galerie</button>
-  </div>
+<div id="adminGalerie" class="admin-panel">
+<h3>Admin Galerie</h3>
+<div id="galleryAdmin"></div>
+<button onclick="renderGalleryAdmin()">Rafraîchir Galerie</button>
+</div>
 </section>
 
+<!-- CONTACT -->
 <section id="contact">
-  <h2>Contact</h2>
-  <p>Email : sculpturemg@example.com</p>
-  <p>WhatsApp : +261 34 00 000 00</p>
-  <p>Facebook : Sculpture MG</p>
+<h2>Contact</h2>
+<p>Email : <span id="contactEmail">sculpture@example.com</span></p>
+<p>Téléphone : <span id="contactTel">+261 34 00 000 00</span></p>
+<p>Facebook : <span id="contactFB">facebook.com/sculpture</span></p>
+<p>WhatsApp : <span id="contactWA">+261 34 00 000 00</span></p>
+
+<div id="adminContact" class="admin-panel">
+<h3>Admin Contact</h3>
+<input id="editEmail" placeholder="Email">
+<input id="editTel" placeholder="Téléphone">
+<input id="editFB" placeholder="Facebook">
+<input id="editWA" placeholder="WhatsApp">
+<button onclick="saveContact()">Enregistrer Contact</button>
+</div>
 </section>
 
-<section id="admin">
-  <h2>Espace Admin</h2>
-  <div id="admin-login">
-    <input type="email" id="admin-email" placeholder="Email admin" />
-    <input type="password" id="admin-pass" placeholder="Mot de passe" />
-    <button onclick="loginAdmin()">Connexion</button>
-  </div>
+<!-- Lightbox -->
+<div id="lightbox" class="lightbox" onclick="this.style.display='none'">
+<img id="lightboxImg" src="">
+</div>
 
-  <div id="admin-section">
-    <h3>Connecté 🎉</h3>
-    <p>Vous pouvez maintenant gérer la galerie.</p>
-  </div>
-</section>
-
-<div id="fullscreen" onclick="closeFullscreen()">
-  <img id="fullscreen-img" />
+<!-- Admin Login Modal -->
+<div id="loginModal" class="lightbox" style="display:none; background:rgba(0,0,0,0.9); flex-direction:column; padding:20px;">
+<h2 style="color:white;">Connexion Admin</h2>
+<input id="adminEmailInput" placeholder="Email" style="margin-bottom:10px; padding:10px; border-radius:5px; border:none;">
+<input type="password" id="adminPassInput" placeholder="Mot de passe" style="margin-bottom:10px; padding:10px; border-radius:5px; border:none;">
+<button onclick="loginAdmin()">Se connecter</button>
+<button onclick="closeLogin()" style="margin-top:10px;">Annuler</button>
+<p id="loginError" style="color:red;"></p>
 </div>
 
 <script>
-// Email & mot de passe provisoires
-const ADMIN_EMAIL = "admin@example.com";
-const ADMIN_PASS = "123456";
+// Données initiales
+let galleryData = [];
+const adminCredentials = { email:'admin@example.com', password:'123456' };
 
-// Galerie data
-let gallery = [];
+// Section toggle
+function openSection(id){
+  document.querySelectorAll('section').forEach(s=>s.classList.remove('visible'));
+  document.getElementById(id).classList.add('visible');
+  if(id==='galerie') renderGalleryAdmin();
+}
 
-function loginAdmin() {
-  const mail = document.getElementById("admin-email").value;
-  const pass = document.getElementById("admin-pass").value;
+// Lightbox
+function openLightbox(src){
+  document.getElementById('lightboxImg').src = src;
+  document.getElementById('lightbox').style.display='flex';
+}
 
-  if(mail === ADMIN_EMAIL && pass === ADMIN_PASS) {
-    document.getElementById("admin-section").style.display = "block";
-    document.getElementById("gallery-actions").style.display = "block";
-    alert("Connexion réussie !");
-  } else {
-    alert("Email ou mot de passe incorrect");
+// Admin Login
+function openLogin(){
+  document.getElementById('loginModal').style.display='flex';
+}
+function closeLogin(){
+  document.getElementById('loginModal').style.display='none';
+}
+function loginAdmin(){
+  const email = document.getElementById('adminEmailInput').value;
+  const pass = document.getElementById('adminPassInput').value;
+  if(email===adminCredentials.email && pass===adminCredentials.password){
+    closeLogin();
+    document.querySelectorAll('.admin-panel').forEach(p=>p.style.display='block');
+  } else{
+    document.getElementById('loginError').innerText='Email ou mot de passe incorrect';
   }
 }
 
-function displayGallery() {
-  const container = document.getElementById("gallery");
-  container.innerHTML = "";
-  gallery.forEach((url, index) => {
-    let img = document.createElement("img");
-    img.src = url;
-    img.onclick = () => openFullscreen(url);
-    container.appendChild(img);
+// Accueil image locale
+function loadAccueilImage(event){
+  const file = event.target.files[0];
+  if(file){
+    const reader = new FileReader();
+    reader.onload = e => { document.getElementById('imgAccueil').src = e.target.result; };
+    reader.readAsDataURL(file);
+  }
+}
+
+// Admin functions
+function saveAccueil(){
+  document.getElementById('textAccueil').innerText = document.getElementById('editAccueil').value || document.getElementById('textAccueil').innerText;
+}
+function saveApropos(){
+  document.getElementById('textApropos').innerText = document.getElementById('editApropos').value || document.getElementById('textApropos').innerText;
+}
+function savePrehistoire(){
+  document.getElementById('textPrehistoire').innerText = document.getElementById('editPrehistoire').value || document.getElementById('textPrehistoire').innerText;
+}
+function saveServices(){
+  const services = document.getElementById('editServices').value.split("\n").filter(Boolean)
+    .map(s=>`<div class="service-card">${s}</div>`).join('');
+  if(services) document.getElementById('listServices').innerHTML = services;
+}
+function saveContact(){
+  document.getElementById('contactEmail').innerText = document.getElementById('editEmail').value || document.getElementById('contactEmail').innerText;
+  document.getElementById('contactTel').innerText = document.getElementById('editTel').value || document.getElementById('contactTel').innerText;
+  document.getElementById('contactFB').innerText = document.getElementById('editFB').value || document.getElementById('contactFB').innerText;
+  document.getElementById('contactWA').innerText = document.getElementById('editWA').value || document.getElementById('contactWA').innerText;
+}
+
+// Galerie
+function renderGallery(){
+  const container = document.getElementById('galleryContainer');
+  container.innerHTML = galleryData.map((item,index)=>
+    `<img src="${item.image}" onclick="openLightbox('${item.image}')">`
+  ).join('');
+}
+
+function renderGalleryAdmin(){
+  const container = document.getElementById('galleryAdmin');
+  container.innerHTML = '';
+  galleryData.forEach((item,index)=>{
+    const div = document.createElement('div');
+    div.style.marginBottom="10px";
+    div.innerHTML = `
+      <img src="${item.image}" style="width:100px;height:100px;object-fit:cover;border-radius:5px;">
+      <input type="file" onchange="updateGalleryImage(event, ${index})">
+      <button onclick="deleteGalleryImage(${index})">Supprimer</button>
+    `;
+    container.appendChild(div);
   });
 }
 
-function addImage() {
-  const url = document.getElementById("image-url").value;
-  if(url.trim() !== "") {
-    gallery.push(url);
-    displayGallery();
-    document.getElementById("image-url").value = "";
+function updateGalleryImage(event,index){
+  const file = event.target.files[0];
+  if(file){
+    const reader = new FileReader();
+    reader.onload = e=>{
+      galleryData[index].image = e.target.result;
+      renderGallery();
+      renderGalleryAdmin();
+    };
+    reader.readAsDataURL(file);
   }
 }
 
-function clearGallery() {
-  if(confirm("Vider toute la galerie ?")) {
-    gallery = [];
-    displayGallery();
+function deleteGalleryImage(index){
+  if(confirm('Voulez-vous supprimer cette image ?')){
+    galleryData.splice(index,1);
+    renderGallery();
+    renderGalleryAdmin();
   }
 }
 
-function openFullscreen(src) {
-  document.getElementById("fullscreen-img").src = src;
-  document.getElementById("fullscreen").style.display = "flex";
-}
-function closeFullscreen() {
-  document.getElementById("fullscreen").style.display = "none";
-}
+// Initialisation
+document.addEventListener('DOMContentLoaded',()=>{
+  galleryData = [];
+  renderGallery();
+  renderGalleryAdmin();
+});
 </script>
+
 </body>
 </html>
