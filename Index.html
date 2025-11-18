@@ -57,6 +57,7 @@ body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:
     <button onclick="show('prehistoire')">Pré-histoire</button>
     <button onclick="show('services')">Services</button>
     <button onclick="show('galerie')">Galerie</button>
+    <button onclick="show('commande')">Commander</button>
     <button onclick="show('contact')">Contact</button>
     <button onclick="openLogin()">Admin</button>
   </nav>
@@ -141,6 +142,36 @@ body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:
     </div>
   </section>
 
+  <!-- Commande -->
+  <section id="commande" class="section" style="display:none">
+    <h2>Commander une œuvre</h2>
+    <form id="orderForm">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <input type="text" id="orderName" placeholder="Votre nom" required>
+        <input type="email" id="orderEmail" placeholder="Votre e-mail" required>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <input type="text" id="orderTel" placeholder="Téléphone">
+        <select id="orderType"><option value="bois">Bois</option><option value="pierre">Pierre</option><option value="mixte">Mixte</option></select>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
+        <select id="orderOeuvre"></select>
+        <input type="number" id="orderQty" min="1" value="1">
+      </div>
+      <textarea id="orderMsg" placeholder="Message / détails" style="margin-top:8px"></textarea>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="btn" type="submit">Envoyer la commande</button>
+        <button class="btn ghost" type="button" onclick="resetOrderForm()">Annuler</button>
+      </div>
+    </form>
+
+    <div id="adminOrders" class="admin-panel">
+      <h3>Commandes reçues</h3>
+      <div id="ordersList"></div>
+      <div style="margin-top:8px"><button class="btn ghost" onclick="clearOrders()">Vider les commandes</button></div>
+    </div>
+  </section>
+
   <!-- Contact -->
   <section id="contact" class="section" style="display:none">
     <h2>Contact</h2>
@@ -212,7 +243,7 @@ body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:
       <button class="btn ghost" onclick="closeLogin()">Annuler</button>
     </div>
     <p id="loginError" style="color:#b00020"></p>
-    <p class="note">Identifiants par défaut : <strong>admin@site.com</strong> / <strong>12345</strong></p>
+    <p class="note">Identifiants par défaut : <strong>admin@site.com</strong> / <strong>1234</strong></p>
   </div>
 </div>
 
@@ -220,10 +251,10 @@ body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:
 /* -----------------------------
    State saved in localStorage
    ----------------------------- */
-const KEY = 'sculpture_gallery_v2';
+const KEY = 'sculpture_gallery_final_v1';
 function defaultState(){
   return {
-    creds:{email:'admin@site.com',pass:'12345'},
+    creds:{email:'admin@site.com',pass:'1234'},
     hero:{text:`Le sculpteur malgache puise son inspiration dans les traditions ancestrales et les légendes locales. Depuis des siècles, l’art de la sculpture transmet la culture, les croyances et l’âme du peuple.`, image:'images/madagascar1.jpg'},
     about:'Artisan sculpteur malgache — bois, pierre et matériaux naturels.',
     prehistoire:'Les premières sculptures malgaches remontent à des siècles ; elles représentaient ancêtres et esprits.',
@@ -235,17 +266,15 @@ function defaultState(){
       {image:'images/madagascar3.jpg', title:'Sculpture Mixte 1', desc:'Bois & pierre, design contemporain', price:'150 000 MGA'},
       {image:'images/madagascar4.jpg', title:'Sculpture Bois 2', desc:'Bois poli, motifs traditionnels', price:'130 000 MGA'},
       {image:'images/madagascar5.jpg', title:'Sculpture Pierre 2', desc:'Pierre taillée, finition fine', price:'210 000 MGA'}
-    ]
+    ],
+    orders:[]
   };
 }
 
 let state;
 function loadState(){
-  try{
-    const r = localStorage.getItem(KEY);
-    state = r ? JSON.parse(r) : defaultState();
-  }catch(e){ state = defaultState(); }
-  saveState(); // ensure saved
+  try{ const r = localStorage.getItem(KEY); state = r ? JSON.parse(r) : defaultState(); }catch(e){ state = defaultState(); }
+  saveState();
 }
 function saveState(){ localStorage.setItem(KEY, JSON.stringify(state)); }
 
@@ -264,12 +293,12 @@ function renderAll(){
   document.getElementById('contactFB').textContent = state.contact.fb;
   document.getElementById('contactWA').textContent = state.contact.wa;
   renderGallery();
+  populateOrderOeuvre();
+  renderOrders();
 }
 function renderGallery(){
   const g = document.getElementById('galleryGrid');
-  if(!state.gallery || state.gallery.length===0){
-    g.innerHTML = '<p class="note">Aucune œuvre pour le moment.</p>'; return;
-  }
+  if(!state.gallery || state.gallery.length===0){ g.innerHTML = '<p class="note">Aucune œuvre pour le moment.</p>'; return; }
   g.innerHTML = state.gallery.map((it,idx)=>`
     <div class="item" data-idx="${idx}">
       <img src="${escapeHtml(it.image)}" alt="${escapeHtml(it.title)}" onclick="openLightboxFromGallery(${idx})">
@@ -284,27 +313,11 @@ function renderGallery(){
 /* -----------------------------
    Helpers / UI
    ----------------------------- */
-function escapeHtml(s){ if(!s) return ''; return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[m])); }
-function show(id){
-  document.querySelectorAll('.section').forEach(s=>s.style.display='none');
-  const el = document.getElementById(id);
-  if(el) el.style.display='block';
-  toggleAdminUI();
-  if(id==='galerie') renderGalleryAdminList();
-}
-function openLightboxFromHero(){ openLightbox(state.hero.image, 'Image d\\'accueil', '', '') }
-function openLightboxFromGallery(idx){
-  const it = state.gallery[idx];
-  openLightbox(it.image, it.title, it.desc, it.price);
-}
-function openLightbox(src, title, desc, price){
-  if(!src) return;
-  document.getElementById('lightboxImg').src = src;
-  document.getElementById('lightboxTitle').innerText = title || '';
-  document.getElementById('lightboxDesc').innerText = desc || '';
-  document.getElementById('lightboxPrice').innerText = price || '';
-  document.getElementById('lightbox').style.display='flex';
-}
+function escapeHtml(s){ if(!s) return ''; return String(s).replace(/[&<>\"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":"&#39;"}[m])); }
+function show(id){ document.querySelectorAll('.section').forEach(s=>s.style.display='none'); const el = document.getElementById(id); if(el) el.style.display='block'; toggleAdminUI(); if(id==='galerie') renderGalleryAdminList(); }
+function openLightboxFromHero(){ openLightbox(state.hero.image, "Image d'accueil", '', ''); }
+function openLightboxFromGallery(idx){ const it = state.gallery[idx]; openLightbox(it.image, it.title, it.desc, it.price); }
+function openLightbox(src, title, desc, price){ if(!src) return; document.getElementById('lightboxImg').src = src; document.getElementById('lightboxTitle').innerText = title || ''; document.getElementById('lightboxDesc').innerText = desc || ''; document.getElementById('lightboxPrice').innerText = price || ''; document.getElementById('lightbox').style.display='flex'; }
 function closeLightbox(){ document.getElementById('lightbox').style.display='none' }
 
 /* -----------------------------
@@ -313,53 +326,20 @@ function closeLightbox(){ document.getElementById('lightbox').style.display='non
 let logged=false;
 function openLogin(){ document.getElementById('loginModal').style.display='flex'; document.getElementById('loginError').innerText=''; }
 function closeLogin(){ document.getElementById('loginModal').style.display='none'; }
-function login(){
-  const e = document.getElementById('loginEmail').value.trim();
-  const p = document.getElementById('loginPass').value.trim();
-  if(e === state.creds.email && p === state.creds.pass){
-    logged=true; closeLogin(); toggleAdminUI(); prefillAdmin(); alert('Connecté en tant qu\\'Admin');
-  } else {
-    document.getElementById('loginError').innerText = 'Email ou mot de passe incorrect';
-  }
-}
+function login(){ const e = document.getElementById('loginEmail').value.trim(); const p = document.getElementById('loginPass').value.trim(); if(e === state.creds.email && p === state.creds.pass){ logged=true; closeLogin(); toggleAdminUI(); prefillAdmin(); alert('Connecté en tant qu\'Admin'); } else { document.getElementById('loginError').innerText = 'Email ou mot de passe incorrect'; } }
 function logoutAdmin(){ logged=false; toggleAdminUI(); show('accueil'); alert('Déconnecté'); }
-function toggleAdminUI(){
-  const panels = document.querySelectorAll('.admin-panel');
-  panels.forEach(p=>p.style.display = logged ? 'block' : 'none');
-  document.getElementById('adminNotice').style.display = logged ? 'block' : 'none';
-  document.getElementById('adminSettings').style.display = logged ? 'block' : 'none';
-}
+function toggleAdminUI(){ const panels = document.querySelectorAll('.admin-panel'); panels.forEach(p=>p.style.display = logged ? 'block' : 'none'); document.getElementById('adminNotice').style.display = logged ? 'block' : 'none'; document.getElementById('adminSettings').style.display = logged ? 'block' : 'none'; }
 
 /* -----------------------------
    Prefill admin fields
    ----------------------------- */
-function prefillAdmin(){
-  document.getElementById('editHeroText').value = state.hero.text;
-  document.getElementById('editAbout').value = state.about;
-  document.getElementById('editPrehistoire').value = state.prehistoire;
-  document.getElementById('editServices').value = (state.services||[]).join('\n');
-  document.getElementById('editContactEmail').value = state.contact.email;
-  document.getElementById('editContactTel').value = state.contact.tel;
-  document.getElementById('editContactFB').value = state.contact.fb;
-  document.getElementById('editContactWA').value = state.contact.wa;
-  document.getElementById('newAdminEmail').value = state.creds.email;
-  document.getElementById('newAdminPass').value = '';
-  renderGalleryAdminList();
-}
+function prefillAdmin(){ document.getElementById('editHeroText').value = state.hero.text; document.getElementById('editAbout').value = state.about; document.getElementById('editPrehistoire').value = state.prehistoire; document.getElementById('editServices').value = (state.services||[]).join('
+'); document.getElementById('editContactEmail').value = state.contact.email; document.getElementById('editContactTel').value = state.contact.tel; document.getElementById('editContactFB').value = state.contact.fb; document.getElementById('editContactWA').value = state.contact.wa; document.getElementById('newAdminEmail').value = state.creds.email; document.getElementById('newAdminPass').value = ''; renderGalleryAdminList(); }
 
 /* -----------------------------
    Admin actions: Hero
    ----------------------------- */
-function saveHero(){
-  const t = document.getElementById('editHeroText').value.trim();
-  const file = document.getElementById('editHeroImage').files[0];
-  if(t) state.hero.text = t;
-  if(file){
-    const r = new FileReader();
-    r.onload = e => { state.hero.image = e.target.result; saveState(); renderAll(); prefillAdmin(); alert('Accueil mis à jour'); };
-    r.readAsDataURL(file);
-  } else { saveState(); renderAll(); prefillAdmin(); alert('Accueil mis à jour'); }
-}
+function saveHero(){ const t = document.getElementById('editHeroText').value.trim(); const file = document.getElementById('editHeroImage').files[0]; if(t) state.hero.text = t; if(file){ const r = new FileReader(); r.onload = e => { state.hero.image = e.target.result; saveState(); renderAll(); prefillAdmin(); alert('Accueil mis à jour'); }; r.readAsDataURL(file); } else { saveState(); renderAll(); prefillAdmin(); alert('Accueil mis à jour'); } }
 function resetHero(){ if(!confirm('Réinitialiser tout le site aux valeurs par défaut ?')) return; state = defaultState(); saveState(); renderAll(); prefillAdmin(); alert('Réinitialisé'); }
 
 /* -----------------------------
@@ -367,98 +347,48 @@ function resetHero(){ if(!confirm('Réinitialiser tout le site aux valeurs par d
    ----------------------------- */
 function saveAbout(){ const v=document.getElementById('editAbout').value.trim(); if(v) state.about=v; saveState(); renderAll(); alert('À propos enregistré'); }
 function savePrehistoire(){ const v=document.getElementById('editPrehistoire').value.trim(); if(v) state.prehistoire=v; saveState(); renderAll(); alert('Pré-histoire enregistré'); }
-function saveServices(){ const arr=document.getElementById('editServices').value.split('\\n').map(s=>s.trim()).filter(Boolean); if(arr.length) state.services=arr; saveState(); renderAll(); alert('Services enregistrés'); }
+function saveServices(){ const arr=document.getElementById('editServices').value.split('
+').map(s=>s.trim()).filter(Boolean); if(arr.length) state.services=arr; saveState(); renderAll(); alert('Services enregistrés'); }
 function saveContact(){ const e=document.getElementById('editContactEmail').value.trim(); const t=document.getElementById('editContactTel').value.trim(); const f=document.getElementById('editContactFB').value.trim(); const w=document.getElementById('editContactWA').value.trim(); if(e) state.contact.email=e; if(t) state.contact.tel=t; if(f) state.contact.fb=f; if(w) state.contact.wa=w; saveState(); renderAll(); alert('Contact enregistré'); }
 
 /* -----------------------------
    Admin: Gallery add/replace/delete/edit
    ----------------------------- */
-function addGalleryItem(){
-  const f = document.getElementById('galleryFile').files[0];
-  const t = document.getElementById('galleryTitle').value.trim() || 'Titre';
-  const d = document.getElementById('galleryDesc').value.trim() || '';
-  const p = document.getElementById('galleryPrice').value.trim() || '';
-  if(!f){ alert('Choisis un fichier image'); return; }
-  const r = new FileReader();
-  r.onload = e => {
-    state.gallery.unshift({ image:e.target.result, title:t, desc:d, price:p });
-    saveState(); renderAll(); renderGalleryAdminList(); document.getElementById('galleryFile').value=''; document.getElementById('galleryTitle').value=''; document.getElementById('galleryDesc').value=''; document.getElementById('galleryPrice').value=''; alert('Image ajoutée');
-  };
-  r.readAsDataURL(f);
-}
+function addGalleryItem(){ const f = document.getElementById('galleryFile').files[0]; const t = document.getElementById('galleryTitle').value.trim() || 'Titre'; const d = document.getElementById('galleryDesc').value.trim() || ''; const p = document.getElementById('galleryPrice').value.trim() || ''; if(!f){ alert('Choisis un fichier image'); return; } const r = new FileReader(); r.onload = e => { state.gallery.unshift({ image:e.target.result, title:t, desc:d, price:p }); saveState(); renderAll(); renderGalleryAdminList(); document.getElementById('galleryFile').value=''; document.getElementById('galleryTitle').value=''; document.getElementById('galleryDesc').value=''; document.getElementById('galleryPrice').value=''; alert('Image ajoutée'); }; r.readAsDataURL(f); }
 
-function renderGalleryAdminList(){
-  const c = document.getElementById('galleryAdminList');
-  c.innerHTML = '';
-  (state.gallery||[]).forEach((it, idx)=>{
-    const row = document.createElement('div'); row.style.display='flex'; row.style.alignItems='center'; row.style.gap='8px'; row.style.marginBottom='8px';
-    const img = document.createElement('img'); img.src = it.image; img.style.width='100px'; img.style.height='70px'; img.style.objectFit='cover'; img.style.borderRadius='6px';
-    const info = document.createElement('div'); info.style.flex='1';
-    info.innerHTML = `<div style="font-weight:700">${escapeHtml(it.title)}</div><div class="note">${escapeHtml(it.price)}</div><div class="note">${escapeHtml(it.desc)}</div>`;
-    const replace = document.createElement('input'); replace.type='file'; replace.accept='image/*'; replace.onchange = e => replaceGalleryImage(e, idx);
-    const editBtn = document.createElement('button'); editBtn.className='btn small'; editBtn.innerText='Modifier (titre/desc/prix)'; editBtn.onclick = ()=> editGalleryItem(idx);
-    const del = document.createElement('button'); del.className='btn ghost small'; del.innerText='Supprimer'; del.onclick = ()=> { if(confirm('Supprimer cette image ?')){ state.gallery.splice(idx,1); saveState(); renderAll(); renderGalleryAdminList(); } };
-    row.appendChild(img); row.appendChild(info); row.appendChild(replace); row.appendChild(editBtn); row.appendChild(del);
-    c.appendChild(row);
-  });
-}
+function renderGalleryAdminList(){ const c = document.getElementById('galleryAdminList'); c.innerHTML = ''; (state.gallery||[]).forEach((it, idx)=>{ const row = document.createElement('div'); row.style.display='flex'; row.style.alignItems='center'; row.style.gap='8px'; row.style.marginBottom='8px'; const img = document.createElement('img'); img.src = it.image; img.style.width='100px'; img.style.height='70px'; img.style.objectFit='cover'; img.style.borderRadius='6px'; const info = document.createElement('div'); info.style.flex='1'; info.innerHTML = `<div style="font-weight:700">${escapeHtml(it.title)}</div><div class="note">${escapeHtml(it.price)}</div><div class="note">${escapeHtml(it.desc)}</div>`; const replace = document.createElement('input'); replace.type='file'; replace.accept='image/*'; replace.onchange = e => replaceGalleryImage(e, idx); const editBtn = document.createElement('button'); editBtn.className='btn small'; editBtn.innerText='Modifier (titre/desc/prix)'; editBtn.onclick = ()=> editGalleryItem(idx); const del = document.createElement('button'); del.className='btn ghost small'; del.innerText='Supprimer'; del.onclick = ()=> { if(confirm('Supprimer cette image ?')){ state.gallery.splice(idx,1); saveState(); renderAll(); renderGalleryAdminList(); } }; row.appendChild(img); row.appendChild(info); row.appendChild(replace); row.appendChild(editBtn); row.appendChild(del); c.appendChild(row); }); }
 
-function replaceGalleryImage(e, idx){
-  const f = e.target.files[0]; if(!f) return;
-  const r = new FileReader(); r.onload = ev => { state.gallery[idx].image = ev.target.result; saveState(); renderAll(); renderGalleryAdminList(); alert('Image remplacée'); }; r.readAsDataURL(f);
-}
+function replaceGalleryImage(e, idx){ const f = e.target.files[0]; if(!f) return; const r = new FileReader(); r.onload = ev => { state.gallery[idx].image = ev.target.result; saveState(); renderAll(); renderGalleryAdminList(); alert('Image remplacée'); }; r.readAsDataURL(f); }
 
-function editGalleryItem(idx){
-  const it = state.gallery[idx];
-  const t = prompt('Titre', it.title || '');
-  if(t===null) return;
-  const d = prompt('Description', it.desc || '');
-  if(d===null) return;
-  const p = prompt('Prix', it.price || '');
-  if(p===null) return;
-  it.title = t; it.desc = d; it.price = p;
-  saveState(); renderAll(); renderGalleryAdminList(); alert('Modifications enregistrées');
-}
+function editGalleryItem(idx){ const it = state.gallery[idx]; const t = prompt('Titre', it.title || ''); if(t===null) return; const d = prompt('Description', it.desc || ''); if(d===null) return; const p = prompt('Prix', it.price || ''); if(p===null) return; it.title = t; it.desc = d; it.price = p; saveState(); renderAll(); renderGalleryAdminList(); alert('Modifications enregistrées'); }
 
 function clearGallery(){ if(!confirm('Vider la galerie ?')) return; state.gallery = []; saveState(); renderAll(); renderGalleryAdminList(); alert('Galerie vidée'); }
 
 /* -----------------------------
+   Orders (commandes)
+   ----------------------------- */
+function populateOrderOeuvre(){ const sel = document.getElementById('orderOeuvre'); sel.innerHTML=''; (state.gallery||[]).forEach((it,idx)=>{ const opt = document.createElement('option'); opt.value = idx; opt.text = `${it.title} — ${it.price || ''}`; sel.appendChild(opt); }); }
+
+document.addEventListener('submit', function(e){ if(e.target && e.target.id==='orderForm'){ e.preventDefault(); const nom = document.getElementById('orderName').value.trim(); const email = document.getElementById('orderEmail').value.trim(); const tel = document.getElementById('orderTel').value.trim(); const type = document.getElementById('orderType').value; const oeuvreIndex = +document.getElementById('orderOeuvre').value; const qty = +document.getElementById('orderQty').value; const msg = document.getElementById('orderMsg').value.trim(); const oeuvre = state.gallery[oeuvreIndex] || {}; const order = { nom,email,tel,type,oeuvreIndex,qty,msg,titre:oeuvre.title||'',prix_unitaire:oeuvre.price||'' , date: new Date().toISOString() }; state.orders.unshift(order); saveState(); renderOrders(); alert('Commande reçue ! Merci.'); e.target.reset(); } });
+
+function renderOrders(){ const d = document.getElementById('ordersList'); d.innerHTML=''; if(!state.orders||state.orders.length===0){ d.innerText='Pas de commandes pour le moment.'; return; } state.orders.forEach((o,i)=>{ const div = document.createElement('div'); div.style.borderBottom='1px solid #eee'; div.style.padding='8px 0'; div.innerHTML = `<strong>${escapeHtml(o.nom)}</strong> (${escapeHtml(o.email)}) — ${new Date(o.date).toLocaleString()}<br>Œuvre: ${escapeHtml(o.titre)} | Type: ${escapeHtml(o.type)} | Qté: ${o.qty}<br>Message: ${escapeHtml(o.msg)}<br>Prix unitaire: ${escapeHtml(o.prix_unitaire)}`; const btnDel = document.createElement('button'); btnDel.className='btn ghost small'; btnDel.style.marginLeft='8px'; btnDel.innerText='Supprimer'; btnDel.onclick = ()=>{ if(confirm('Supprimer cette commande ?')){ state.orders.splice(i,1); saveState(); renderOrders(); } }; div.appendChild(btnDel); d.appendChild(div); }); }
+
+function clearOrders(){ if(!confirm('Vider toutes les commandes ?')) return; state.orders = []; saveState(); renderOrders(); alert('Commandes vidées'); }
+
+function resetOrderForm(){ document.getElementById('orderForm').reset(); }
+
+/* -----------------------------
    Admin: change creds, export/import
    ----------------------------- */
-function changeAdminCreds(){
-  const ne = document.getElementById('newAdminEmail').value.trim();
-  const np = document.getElementById('newAdminPass').value.trim();
-  if(ne) state.creds.email = ne;
-  if(np) state.creds.pass = np;
-  saveState(); alert('Identifiants mis à jour');
-}
+function changeAdminCreds(){ const ne = document.getElementById('newAdminEmail').value.trim(); const np = document.getElementById('newAdminPass').value.trim(); if(ne) state.creds.email = ne; if(np) state.creds.pass = np; saveState(); alert('Identifiants mis à jour'); }
 
-function exportJSON(){
-  const blob = new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a'); a.href=url; a.download='site_backup.json'; a.click();
-  setTimeout(()=>URL.revokeObjectURL(url),3000);
-}
-function importJSON(){
-  const f = document.getElementById('importFile').files[0]; if(!f){ alert('Choisir un fichier JSON'); return; }
-  const r = new FileReader();
-  r.onload = e => {
-    try{
-      const obj = JSON.parse(e.target.result);
-      if(obj && obj.gallery && obj.hero){
-        state = Object.assign(defaultState(), obj);
-        saveState(); renderAll(); prefillAdmin(); alert('Import OK');
-      } else throw new Error('Format invalide');
-    }catch(err){ alert('Fichier invalide'); }
-  };
-  r.readAsText(f);
-}
+function exportJSON(){ const blob = new Blob([JSON.stringify(state,null,2)],{type:'application/json'}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href=url; a.download='site_backup.json'; a.click(); setTimeout(()=>URL.revokeObjectURL(url),3000); }
+function importJSON(){ const f = document.getElementById('importFile').files[0]; if(!f){ alert('Choisir un fichier JSON'); return; } const r = new FileReader(); r.onload = e => { try{ const obj = JSON.parse(e.target.result); if(obj && obj.gallery && obj.hero){ state = Object.assign(defaultState(), obj); saveState(); renderAll(); prefillAdmin(); alert('Import OK'); } else throw new Error('Format invalide'); }catch(err){ alert('Fichier invalide'); } }; r.readAsText(f); }
 
 /* -----------------------------
    Init
    ----------------------------- */
-document.addEventListener('DOMContentLoaded', ()=>{
-  loadState(); renderAll(); show('accueil'); // default view
+document.addEventListener('DOMContentLoaded', ()=>{ loadState(); renderAll(); show('accueil'); // default view
 });
 </script>
 </body>
