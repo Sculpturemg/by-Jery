@@ -8,16 +8,20 @@
 :root{--accent:#8B5E3C;--bg:#fbf8f5;--muted:#666;--card:#fff}
 *{box-sizing:border-box}
 body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:#222}
-.header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:var(--accent);color:#fff;flex-wrap:wrap}
+.header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:var(--accent);color:#fff}
 .brand{font-weight:800}
 .nav{display:flex;gap:8px;flex-wrap:wrap}
 .nav button{background:transparent;border:1px solid rgba(255,255,255,0.12);color:#fff;padding:8px 12px;border-radius:999px;cursor:pointer}
 .container{max-width:1100px;margin:18px auto;padding:0 16px}
 .section{margin-top:18px;padding:14px;background:var(--card);border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,0.04)}
 .section h2{color:var(--accent);margin:0 0 10px}
+.hero{display:flex;gap:20px;align-items:center}
+.hero .left{flex:1}
+.thumb{width:320px;border-radius:10px;overflow:hidden}
+.thumb img{width:100%;height:100%;object-fit:cover;cursor:pointer}
 .services-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
 .service-card{background:#fff;padding:14px;border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,0.04)}
-.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
 .gallery .item{position:relative;border-radius:8px;overflow:hidden;background:#eee;padding-bottom:6px}
 .gallery img{width:100%;height:140px;object-fit:cover;display:block;cursor:pointer;transition:transform .18s}
 .gallery img:hover{transform:scale(1.04)}
@@ -39,7 +43,7 @@ body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:
 .row{display:flex;gap:8px}
 .row .col{flex:1}
 .note{color:var(--muted);font-size:13px}
-@media(max-width:820px){.lightbox .box{flex-direction:column}.lightbox img{max-width:100%}.lightbox .info{max-width:100%}}
+@media(max-width:820px){.hero{flex-direction:column}.thumb{width:100%}.lightbox .box{flex-direction:column}.lightbox img{max-width:100%}.lightbox .info{max-width:100%}}
 </style>
 </head>
 <body>
@@ -59,128 +63,227 @@ body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:
 </header>
 
 <main class="container">
-
-<section id="accueil" class="section">
-  <h2>Accueil</h2>
-  <p>Bienvenue dans l'univers de la sculpture malgache. Découvrez les œuvres qui mêlent tradition et modernité.</p>
-</section>
-
-<section id="apropos" class="section" style="display:none">
-  <h2>À propos</h2>
-  <p>Artisan sculpteur malgache travaillant le bois, la pierre et les matériaux naturels.</p>
-</section>
-
-<section id="prehistoire" class="section" style="display:none">
-  <h2>Pré-histoire</h2>
-  <p>Les premières sculptures malgaches représentaient ancêtres et esprits, chaque région ayant développé son style unique.</p>
-</section>
-
-<section id="services" class="section" style="display:none">
-  <h2>Services</h2>
-  <div id="servicesGrid" class="services-grid"></div>
-</section>
-
-<section id="galerie" class="section" style="display:none">
-  <h2>Galerie</h2>
-  <div id="galleryGrid" class="gallery"></div>
-  <div id="adminGallery" class="admin-panel">
-    <h3>Gérer la galerie</h3>
-    <input type="file" id="galleryFile" accept="image/*" class="input">
-    <input id="galleryTitle" class="input" placeholder="Titre">
-    <input id="galleryPrice" class="input" placeholder="Prix">
-    <textarea id="galleryDesc" rows="2" class="input" placeholder="Description"></textarea>
-    <div class="row">
-      <button class="btn" onclick="addGalleryItem()">Ajouter</button>
-      <button class="btn ghost" onclick="clearGallery()">Vider la galerie</button>
+  <!-- Accueil -->
+  <section id="accueil" class="section">
+    <div class="hero">
+      <div class="left">
+        <h2 id="heroTitle">Histoire & héritage de la sculpture malgache</h2>
+        <p id="heroText"></p>
+        <div class="note" id="adminNotice" style="display:none">Admin connecté — outils d'édition visibles</div>
+      </div>
+      <div class="thumb">
+        <img id="heroImg" src="" alt="Accueil" onclick="openLightboxFromHero()">
+      </div>
     </div>
-  </div>
-</section>
+    <div id="adminAccueil" class="admin-panel">
+      <h3>Modifier Accueil</h3>
+      <textarea id="editHeroText" rows="4" class="input"></textarea>
+      <input type="file" id="editHeroImage" accept="image/*" class="input">
+      <div class="row">
+        <button class="btn" onclick="saveHero()">Enregistrer</button>
+        <button class="btn ghost" onclick="resetHero()">Réinitialiser</button>
+      </div>
+    </div>
+  </section>
 
-<section id="commande" class="section" style="display:none">
-  <h2>Commander une œuvre</h2>
-  <form id="orderForm">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-      <input type="text" id="orderName" placeholder="Nom" required>
-      <input type="email" id="orderEmail" placeholder="Email" required>
+  <!-- À propos -->
+  <section id="apropos" class="section" style="display:none">
+    <h2>À propos</h2>
+    <p id="aboutText"></p>
+    <div id="adminApropos" class="admin-panel">
+      <h3>Modifier À propos</h3>
+      <textarea id="editAbout" rows="4" class="input"></textarea>
+      <button class="btn" onclick="saveAbout()">Enregistrer</button>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
-      <select id="orderOeuvre"></select>
-      <input type="number" id="orderQty" min="1" value="1">
-    </div>
-    <textarea id="orderMsg" placeholder="Message / détails" style="margin-top:8px"></textarea>
-    <div style="display:flex;gap:8px;margin-top:8px">
-      <button class="btn" type="submit">Envoyer</button>
-      <button class="btn ghost" type="button" onclick="resetOrderForm()">Annuler</button>
-    </div>
-  </form>
-</section>
+  </section>
 
-<section id="contact" class="section" style="display:none">
-  <h2>Contact</h2>
-  <p>Email : contact@artmalagasy.mg</p>
-  <p>Téléphone : +261 34 00 000 00</p>
-</section>
+  <!-- Pré-histoire -->
+  <section id="prehistoire" class="section" style="display:none">
+    <h2>Pré-histoire et Origines</h2>
+    <p id="prehistoireText"></p>
+    <div id="adminPrehistoire" class="admin-panel">
+      <h3>Modifier Pré-histoire</h3>
+      <textarea id="editPrehistoire" rows="4" class="input"></textarea>
+      <button class="btn" onclick="savePrehistoire()">Enregistrer</button>
+    </div>
+  </section>
+
+  <!-- Services -->
+  <section id="services" class="section" style="display:none">
+    <h2>Services</h2>
+    <div id="servicesGrid" class="services-grid"></div>
+    <div id="adminServices" class="admin-panel">
+      <h3>Modifier Services</h3>
+      <textarea id="editServices" rows="4" class="input" placeholder="Une ligne = un service"></textarea>
+      <button class="btn" onclick="saveServices()">Enregistrer</button>
+    </div>
+  </section>
+
+  <!-- Galerie -->
+  <section id="galerie" class="section" style="display:none">
+    <h2>Galerie</h2>
+    <div id="galleryGrid" class="gallery"></div>
+    <div id="adminGallery" class="admin-panel">
+      <h3>Gérer la galerie</h3>
+      <input type="file" id="galleryFile" accept="image/*" class="input">
+      <input id="galleryTitle" class="input" placeholder="Titre">
+      <input id="galleryPrice" class="input" placeholder="Prix">
+      <textarea id="galleryDesc" rows="2" class="input" placeholder="Description"></textarea>
+      <div class="row">
+        <button class="btn" onclick="addGalleryItem()">Ajouter</button>
+        <button class="btn ghost" onclick="clearGallery()">Vider la galerie</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Commande -->
+  <section id="commande" class="section" style="display:none">
+    <h2>Commander une œuvre</h2>
+    <form id="orderForm">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <input type="text" id="orderName" placeholder="Votre nom" required>
+        <input type="email" id="orderEmail" placeholder="Votre e-mail" required>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <input type="text" id="orderTel" placeholder="Téléphone">
+        <select id="orderType">
+          <option value="bois">Bois</option>
+          <option value="pierre">Pierre</option>
+          <option value="mixte">Mixte</option>
+        </select>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
+        <select id="orderOeuvre"></select>
+        <input type="number" id="orderQty" min="1" value="1">
+      </div>
+      <textarea id="orderMsg" placeholder="Message / détails" style="margin-top:8px"></textarea>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="btn" type="submit">Envoyer la commande</button>
+        <button class="btn ghost" type="button" onclick="resetOrderForm()">Annuler</button>
+      </div>
+    </form>
+    <div id="adminOrders" class="admin-panel">
+      <h3>Commandes reçues</h3>
+      <div id="ordersList"></div>
+      <div style="margin-top:8px"><button class="btn ghost" onclick="clearOrders()">Vider les commandes</button></div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact" class="section" style="display:none">
+    <h2>Contact</h2>
+    <p>Email : <a id="contactEmail" href="mailto:"></a></p>
+    <p>Téléphone : <a id="contactTel" href="tel:"></a></p>
+    <p>WhatsApp : <a id="contactWA" href="" target="_blank"></a></p>
+    <p>Facebook : <a id="contactFB" href="" target="_blank"></a></p>
+    <div id="adminContact" class="admin-panel">
+      <h3>Modifier Contact</h3>
+      <input id="editContactEmail" class="input" placeholder="Email">
+      <input id="editContactTel" class="input" placeholder="Téléphone">
+      <input id="editContactWA" class="input" placeholder="WhatsApp">
+      <input id="editContactFB" class="input" placeholder="Facebook">
+      <button class="btn" onclick="saveContact()">Enregistrer</button>
+    </div>
+  </section>
+</main>
 
 <footer class="footer">© <span id="year"></span> L'Art de la Sculpture Malgache — Madagascar</footer>
 
-<!-- LIGHTBOX -->
-<div id="lightbox" class="lightbox" onclick="if(event.target.id==='lightbox') closeLightbox()">
-  <div class="box">
-    <img id="lightboxImg" src="">
-    <div class="info">
-      <div class="title" id="lightboxTitle"></div>
-      <div class="desc" id="lightboxDesc"></div>
-      <div class="price" id="lightboxPrice"></div>
-      <div style="margin-top:10px"><button class="btn" onclick="closeLightbox()">Fermer</button></div>
-    </div>
-  </div>
-</div>
-
-<!-- LOGIN MODAL -->
-<div id="loginModal" class="login-modal" onclick="if(event.target.id==='loginModal') closeLogin()">
-  <div class="login-card">
-    <h3>Connexion Admin</h3>
-    <input id="loginEmail" class="input" placeholder="Email">
-    <input id="loginPass" class="input" placeholder="Mot de passe" type="password">
-    <div class="row">
-      <button class="btn" onclick="login()">Se connecter</button>
-      <button class="btn ghost" onclick="closeLogin()">Annuler</button>
-    </div>
-    <p class="note">Identifiants : <strong>admin@site.com</strong> / <strong>1234</strong></p>
-  </div>
-</div>
-
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 <script>
-const KEY='sculpture_admin';
-function defaultState(){ return {
-  creds:{email:'admin@site.com',pass:'1234'},
-  services:['Commandes personnalisées','Restauration d’œuvres','Expositions','Ateliers & Formations'],
-  gallery:[
-    {image:'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/...',title:'Sculpture Bois 1',desc:'Bois sculpté',price:'120 000 MGA'},
-    {image:'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/...',title:'Sculpture Pierre 1',desc:'Pierre gravée',price:'200 000 MGA'}
-  ],
-  orders:[]
+// --- STATE
+const KEY='sculpture_gallery_final_v5';
+function defaultState(){return{
+creds:{email:'admin@site.com',pass:'1234'},
+hero:{text:'Le sculpteur malgache puise son inspiration...',image:''},
+about:'Artisan sculpteur malgache — bois, pierre et matériaux naturels.',
+prehistoire:'Les premières sculptures malgaches remontent à des siècles...',
+services:['Commandes personnalisées','Restauration d’œuvres','Expositions','Ateliers & Formations'],
+contact:{email:'contact@artmalagasy.mg',tel:'+26134000000',wa:'+26134000000',fb:'facebook.com/natureartisanale'},
+gallery:[],
+orders:[]
 };}
-let state;
+let state,isAdmin=false; 
 function loadState(){try{state=JSON.parse(localStorage.getItem(KEY))||defaultState();}catch(e){state=defaultState();} saveState();}
 function saveState(){localStorage.setItem(KEY,JSON.stringify(state));}
-function show(id){document.querySelectorAll('main section').forEach(s=>s.style.display='none');document.getElementById(id).style.display='block';}
-function openLogin(){document.getElementById('loginModal').style.display='flex';}
-function closeLogin(){document.getElementById('loginModal').style.display='none';}
-function login(){const e=document.getElementById('loginEmail').value;const p=document.getElementById('loginPass').value;if(e===state.creds.email&&p===state.creds.pass){closeLogin();document.getElementById('adminGallery').style.display='block';alert('Connecté en Admin');}else alert('Erreur identifiants');}
-function renderGallery(){const grid=document.getElementById('galleryGrid');grid.innerHTML='';state.gallery.forEach((g,i)=>{const div=document.createElement('div');div.className='item';const img=document.createElement('img');img.src=g.image;img.onclick=()=>openLightbox(i);div.appendChild(img);const cap=document.createElement('div');cap.className='caption';cap.innerHTML=`<div class="title">${g.title}</div><div class="desc">${g.desc}</div><div class="price">${g.price}</div>`;div.appendChild(cap);grid.appendChild(div);});new Sortable(grid,{animation:150});}
-function addGalleryItem(){const f=document.getElementById('galleryFile').files[0];const t=document.getElementById('galleryTitle').value;const d=document.getElementById('galleryDesc').value;const p=document.getElementById('galleryPrice').value;if(!f||!t) return alert('Fichier et titre requis');const reader=new FileReader();reader.onload=e=>{state.gallery.push({image:e.target.result,title:t,desc:d,price:p});saveState();renderGallery();populateOeuvres();document.getElementById('galleryFile').value='';document.getElementById('galleryTitle').value='';document.getElementById('galleryDesc').value='';document.getElementById('galleryPrice').value='';};reader.readAsDataURL(f);}
-function clearGallery(){if(confirm('Vider toute la galerie?')){state.gallery=[];saveState();renderGallery();populateOeuvres();}}
-let currentLight=0;
-function openLightbox(i){currentLight=i;const g=state.gallery[i];document.getElementById('lightboxImg').src=g.image;document.getElementById('lightboxTitle').textContent=g.title;document.getElementById('lightboxDesc').textContent=g.desc;document.getElementById('lightboxPrice').textContent=g.price;document.getElementById('lightbox').style.display='flex';}
+
+// --- RENDER
+function renderAll(){
+document.getElementById('year').textContent=new Date().getFullYear();
+document.getElementById('heroText').textContent=state.hero.text;
+document.getElementById('heroImg').src=state.hero.image;
+document.getElementById('aboutText').textContent=state.about;
+document.getElementById('prehistoireText').textContent=state.prehistoire;
+
+// Services
+const grid=document.getElementById('servicesGrid');grid.innerHTML='';state.services.forEach(s=>{const d=document.createElement('div');d.className='service-card';d.textContent=s;grid.appendChild(d);});
+
+// Contact
+document.getElementById('contactEmail').textContent=state.contact.email;document.getElementById('contactEmail').href='mailto:'+state.contact.email;
+document.getElementById('contactTel').textContent=state.contact.tel;document.getElementById('contactTel').href='tel:'+state.contact.tel.replace(/\D/g,'');
+document.getElementById('contactWA').textContent=state.contact.wa;document.getElementById('contactWA').href='https://wa.me/'+state.contact.wa.replace(/\D/g,'');
+document.getElementById('contactFB').textContent=state.contact.fb;document.getElementById('contactFB').href='https://'+state.contact.fb.replace(/^https?:\/\//,'');
+
+// Orders
+const l=document.getElementById('ordersList');if(l){l.innerHTML='';state.orders.forEach(o=>{const d=document.createElement('div');d.style.padding='8px';d.style.borderBottom='1px solid #eee';d.innerHTML=`<strong>${o.name}</strong> (${o.email})<br>${o.type} / ${o.oeuvre} x${o.qty}<br>${o.msg||''}`;l.appendChild(d);});}
+
+// Oeuvres for orders
+const sel=document.getElementById('orderOeuvre');if(sel){sel.innerHTML='';state.gallery.forEach(g=>{const o=document.createElement('option');o.value=g.title;o.textContent=g.title;sel.appendChild(o);});}
+
+// Gallery
+const g=document.getElementById('galleryGrid');g.innerHTML='';state.gallery.forEach((i,idx)=>{const div=document.createElement('div');div.className='item';const img=document.createElement('img');img.src=i.image;img.onclick=()=>openLightbox(idx);const cap=document.createElement('div');cap.className='caption';const t=document.createElement('div');t.className='title';t.textContent=i.title;t.contentEditable=isAdmin;t.onblur=()=>{i.title=t.textContent;saveState();};const d=document.createElement('div');d.className='desc';d.textContent=i.desc;d.contentEditable=isAdmin;d.onblur=()=>{i.desc=d.textContent;saveState();};const p=document.createElement('div');p.className='price';p.textContent=i.price;p.contentEditable=isAdmin;p.onblur=()=>{i.price=p.textContent;saveState();};cap.appendChild(t);cap.appendChild(d);cap.appendChild(p);if(isAdmin){const del=document.createElement('button');del.className='btn ghost';del.textContent='Supprimer';del.style.marginTop='4px';del.onclick=()=>{state.gallery.splice(idx,1);saveState();renderAll();};cap.appendChild(del);}div.appendChild(img);div.appendChild(cap);g.appendChild(div);});
+if(isAdmin){new Sortable(g,{animation:150,onEnd:evt=>{const item=state.gallery.splice(evt.oldIndex,1)[0];state.gallery.splice(evt.newIndex,0,item);saveState();renderAll();}});}
+}
+function openLightbox(idx){const i=state.gallery[idx];document.getElementById('lightboxImg').src=i.image;document.getElementById('lightboxTitle').textContent=i.title;document.getElementById('lightboxDesc').textContent=i.desc;document.getElementById('lightboxPrice').textContent=i.price;document.getElementById('lightbox').style.display='flex';}
+function openLightboxFromHero(){document.getElementById('lightboxImg').src=state.hero.image;document.getElementById('lightboxTitle').textContent='';document.getElementById('lightboxDesc').textContent=state.hero.text;document.getElementById('lightboxPrice').textContent='';document.getElementById('lightbox').style.display='flex';}
 function closeLightbox(){document.getElementById('lightbox').style.display='none';}
-function renderServices(){const grid=document.getElementById('servicesGrid');grid.innerHTML='';state.services.forEach(s=>{const d=document.createElement('div');d.className='service-card';d.textContent=s;grid.appendChild(d);});}
-document.getElementById('orderForm').onsubmit=function(e){e.preventDefault();const o={name:this.orderName.value,email:this.orderEmail.value,oeuvre:this.orderOeuvre.value,qty:this.orderQty.value,msg:this.orderMsg.value};state.orders.push(o);saveState();alert('Commande enregistrée');resetOrderForm();}
+
+// Navigation
+function show(id){['accueil','apropos','prehistoire','services','galerie','commande','contact'].forEach(s=>{document.getElementById(s).style.display=(s===id)?'block':'none';});}
+
+// --- ADMIN
+function openLogin(){document.getElementById('loginModal').style.display='flex';}
+function login(){const e=document.getElementById('loginEmail').value,p=document.getElementById('loginPass').value;if(e===state.creds.email&&p===state.creds.pass){isAdmin=true;document.getElementById('loginModal').style.display='none';document.querySelectorAll('.admin-panel').forEach(p=>p.style.display='block');document.getElementById('adminNotice').style.display='block';renderAll();alert('Admin connecté');}else alert('Identifiants incorrects');}
+
+// Admin functions
+function saveHero(){state.hero.text=document.getElementById('editHeroText').value;const f=document.getElementById('editHeroImage').files[0];if(f){const r=new FileReader();r.onload=e=>{state.hero.image=e.target.result;saveState();renderAll();};r.readAsDataURL(f);}else{saveState();renderAll();}}
+function resetHero(){state.hero=defaultState().hero;saveState();renderAll();}
+function saveAbout(){state.about=document.getElementById('editAbout').value;saveState();renderAll();}
+function savePrehistoire(){state.prehistoire=document.getElementById('editPrehistoire').value;saveState();renderAll();}
+function saveServices(){state.services=document.getElementById('editServices').value.split('\n').map(s=>s.trim()).filter(Boolean);saveState();renderAll();}
+function addGalleryItem(){const f=document.getElementById('galleryFile').files[0];const t=document.getElementById('galleryTitle').value;const p=document.getElementById('galleryPrice').value;const d=document.getElementById('galleryDesc').value;if(f&&t){const r=new FileReader();r.onload=e=>{state.gallery.push({image:e.target.result,title:t,desc:d,price:p});saveState();renderAll();};r.readAsDataURL(f);}}
+function clearGallery(){if(confirm('Vider toute la galerie ?')){state.gallery=[];saveState();renderAll();}}
 function resetOrderForm(){document.getElementById('orderForm').reset();}
-function populateOeuvres(){const sel=document.getElementById('orderOeuvre');sel.innerHTML='';state.gallery.forEach(g=>{const opt=document.createElement('option');opt.text=g.title;opt.value=g.title;sel.add(opt);});}
-loadState();renderServices();renderGallery();populateOeuvres();document.getElementById('year').textContent=new Date().getFullYear();
+function clearOrders(){if(confirm('Supprimer toutes les commandes ?')){state.orders=[];saveState();renderAll();}}
+function saveContact(){state.contact.email=document.getElementById('editContactEmail').value;state.contact.tel=document.getElementById('editContactTel').value;state.contact.wa=document.getElementById('editContactWA').value;state.contact.fb=document.getElementById('editContactFB').value;saveState();renderAll();alert('Contact mis à jour !');}
+
+loadState();renderAll();
 </script>
+
+<!-- Lightbox -->
+<div id="lightbox" class="lightbox" onclick="closeLightbox()">
+  <div class="box" onclick="event.stopPropagation()">
+    <img id="lightboxImg" src="">
+    <div class="info">
+      <h3 id="lightboxTitle"></h3>
+      <p id="lightboxDesc"></p>
+      <p id="lightboxPrice" style="color:var(--accent);font-weight:800"></p>
+    </div>
+  </div>
+</div>
+
+<!-- Login Modal -->
+<div id="loginModal" class="login-modal">
+  <div class="login-card">
+    <h3>Admin Login</h3>
+    <input id="loginEmail" class="input" placeholder="Email">
+    <input id="loginPass" type="password" class="input" placeholder="Mot de passe">
+    <div class="row">
+      <button class="btn" onclick="login()">Se connecter</button>
+      <button class="btn ghost" onclick="document.getElementById('loginModal').style.display='none'">Annuler</button>
+    </div>
+  </div>
+</div>
 
 </body>
 </html>
