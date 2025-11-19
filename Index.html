@@ -37,7 +37,6 @@ body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:
 .input,textarea,input[type=file],select{width:100%;padding:8px;border-radius:6px;border:1px solid #ddd;margin-bottom:8px}
 .btn{background:var(--accent);color:#fff;border:0;padding:8px 10px;border-radius:8px;cursor:pointer}
 .btn.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent)}
-.admin-toolbar{margin-top:12px;padding:10px;background:#fff8f0;border-radius:8px;border:1px dashed #efd0b3;display:none}
 .admin-panel{margin-top:10px;background:#fff8f0;padding:12px;border-radius:10px;display:none}
 .login-modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);z-index:10000}
 .login-card{background:#fff;padding:18px;border-radius:12px;width:94%;max-width:420px}
@@ -69,11 +68,11 @@ body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:
     <div class="hero">
       <div class="left">
         <h2 id="heroTitle">Histoire & héritage de la sculpture malgache</h2>
-        <p id="heroText">Le sculpteur malgache puise son inspiration dans les traditions ancestrales et les légendes locales. Depuis des siècles, l’art de la sculpture transmet la culture, les croyances et l’âme du peuple.</p>
+        <p id="heroText"></p>
         <div class="note" id="adminNotice" style="display:none">Admin connecté — outils d'édition visibles</div>
       </div>
       <div class="thumb">
-        <img id="heroImg" src="images/madagascar1.jpg" alt="Accueil" onclick="openLightboxFromHero()">
+        <img id="heroImg" src="" alt="Accueil" onclick="openLightboxFromHero()">
       </div>
     </div>
     <div id="adminAccueil" class="admin-panel">
@@ -84,14 +83,13 @@ body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:
         <button class="btn" onclick="saveHero()">Enregistrer</button>
         <button class="btn ghost" onclick="resetHero()">Réinitialiser</button>
       </div>
-      <p class="note">Uploader depuis téléphone/ordinateur. Les images sont stockées localement dans le navigateur (localStorage).</p>
     </div>
   </section>
 
   <!-- À propos -->
   <section id="apropos" class="section" style="display:none">
     <h2>À propos</h2>
-    <p id="aboutText">Artisan sculpteur malgache — bois, pierre et matériaux naturels.</p>
+    <p id="aboutText"></p>
     <div id="adminApropos" class="admin-panel">
       <h3>Modifier À propos</h3>
       <textarea id="editAbout" rows="4" class="input"></textarea>
@@ -102,7 +100,7 @@ body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:
   <!-- Pré-histoire -->
   <section id="prehistoire" class="section" style="display:none">
     <h2>Pré-histoire et Origines</h2>
-    <p id="prehistoireText">Les premières sculptures malgaches remontent à des siècles ; elles représentaient ancêtres et esprits. Chaque région a développé un style propre.</p>
+    <p id="prehistoireText"></p>
     <div id="adminPrehistoire" class="admin-panel">
       <h3>Modifier Pré-histoire</h3>
       <textarea id="editPrehistoire" rows="4" class="input"></textarea>
@@ -128,15 +126,13 @@ body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:
     <div id="adminGallery" class="admin-panel">
       <h3>Gérer la galerie (titre / description / prix)</h3>
       <input type="file" id="galleryFile" accept="image/*" class="input">
-      <input id="galleryTitle" class="input" placeholder="Titre (ex: Sculpture Bois 1)">
-      <input id="galleryPrice" class="input" placeholder="Prix (ex: 120 000 MGA)">
+      <input id="galleryTitle" class="input" placeholder="Titre">
+      <input id="galleryPrice" class="input" placeholder="Prix">
       <textarea id="galleryDesc" rows="2" class="input" placeholder="Brève description"></textarea>
       <div class="row">
         <button class="btn" onclick="addGalleryItem()">Ajouter</button>
         <button class="btn ghost" onclick="clearGallery()">Vider la galerie</button>
       </div>
-      <div id="galleryAdminList" style="margin-top:12px"></div>
-      <p class="note">Vous pouvez glisser-déposer pour réorganiser les images.</p>
     </div>
   </section>
 
@@ -166,7 +162,6 @@ body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:
         <button class="btn ghost" type="button" onclick="resetOrderForm()">Annuler</button>
       </div>
     </form>
-
     <div id="adminOrders" class="admin-panel">
       <h3>Commandes reçues</h3>
       <div id="ordersList"></div>
@@ -179,11 +174,10 @@ body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:
   <!-- Contact -->
   <section id="contact" class="section" style="display:none">
     <h2>Contact</h2>
-    <p>Email : <span id="contactEmail">contact@artmalagasy.mg</span></p>
-    <p>Téléphone : <span id="contactTel">+261 34 00 000 00</span></p>
-    <p>Facebook : <span id="contactFB">facebook.com/natureartisanale</span></p>
-    <p>WhatsApp : <span id="contactWA">+261 34 00 000 00</span></p>
-
+    <p>Email : <span id="contactEmail"></span></p>
+    <p>Téléphone : <span id="contactTel"></span></p>
+    <p>Facebook : <span id="contactFB"></span></p>
+    <p>WhatsApp : <span id="contactWA"></span></p>
     <div id="adminContact" class="admin-panel">
       <h3>Modifier Contact</h3>
       <input id="editContactEmail" class="input" placeholder="Email">
@@ -208,7 +202,6 @@ body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:
         <button class="btn ghost" onclick="logoutAdmin()">Se déconnecter</button>
       </div>
     </div>
-
     <div class="admin-panel">
       <h3>Sauvegarder / Restaurer</h3>
       <div class="row">
@@ -216,7 +209,6 @@ body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:
         <input type="file" id="importFile" class="input">
         <button class="btn ghost" onclick="importJSON()">Importer JSON</button>
       </div>
-      <p class="note">Le backup contient tout le contenu (images en base64 si uploadées).</p>
     </div>
   </section>
 </main>
@@ -253,31 +245,27 @@ body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:
 
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 <script>
-/* -----------------------------
-   STATE & LOCALSTORAGE
------------------------------ */
-const KEY='sculpture_gallery_final_v2';
+// ===== STATE =====
+const KEY='sculpture_gallery_final_v3';
 function defaultState(){ return {
   creds:{email:'admin@site.com',pass:'1234'},
-  hero:{text:`Le sculpteur malgache puise son inspiration...`, image:'images/madagascar1.jpg'},
+  hero:{text:'Le sculpteur malgache puise son inspiration...', image:'https://i.imgur.com/yz5w2JY.jpg'},
   about:'Artisan sculpteur malgache — bois, pierre et matériaux naturels.',
   prehistoire:'Les premières sculptures malgaches remontent à des siècles ; elles représentaient ancêtres et esprits.',
   services:['Commandes personnalisées','Restauration d’œuvres','Expositions','Ateliers & Formations'],
   contact:{email:'contact@artmalagasy.mg',tel:'+261 34 00 000 00',fb:'facebook.com/natureartisanale',wa:'+261 34 00 000 00'},
   gallery:[
-    {image:'images/madagascar1.jpg',title:'Sculpture Bois 1',desc:'Bois sculpté',price:'120 000 MGA'},
-    {image:'images/madagascar2.jpg',title:'Sculpture Pierre 1',desc:'Pierre gravée',price:'200 000 MGA'},
+    {image:'https://i.imgur.com/yz5w2JY.jpg',title:'Sculpture Bois 1',desc:'Bois sculpté',price:'120 000 MGA'},
+    {image:'https://i.imgur.com/E1fA1H7.jpg',title:'Sculpture Pierre 1',desc:'Pierre gravée',price:'200 000 MGA'}
   ],
   orders:[]
 };}
-
 let state;
 function loadState(){ try{ state=JSON.parse(localStorage.getItem(KEY))||defaultState(); }catch(e){ state=defaultState(); } saveState();}
 function saveState(){ localStorage.setItem(KEY,JSON.stringify(state)); }
 
-/* -----------------------------
-   RENDERING
------------------------------ */
+// ===== RENDER =====
+let isAdmin=false;
 function renderAll(){
   document.getElementById('year').textContent=new Date().getFullYear();
   document.getElementById('heroText').textContent=state.hero.text;
@@ -293,113 +281,179 @@ function renderAll(){
   renderOrders();
   populateOeuvres();
 }
-function renderServices(){
-  const grid=document.getElementById('servicesGrid');grid.innerHTML='';
-  state.services.forEach(s=>{const d=document.createElement('div');d.className='service-card';d.textContent=s;grid.appendChild(d);});
+function renderServices(){ const grid=document.getElementById('servicesGrid');grid.innerHTML='';state.services.forEach(s=>{const d=document.createElement('div');d.className='service-card';d.textContent=s;grid.appendChild(d);});}
+function renderGallery(){ const g=document.getElementById('galleryGrid');g.innerHTML=''; state.gallery.forEach((i,idx)=>{const div=document.createElement('div');div.className='item'; const img=document.createElement('img');img.src=i.image;img.onclick=()=>openLightboxFromGallery(idx); const cap=document.createElement('div');cap.className='caption'; const t=document.createElement('div');t.className='title';t.textContent=i.title; const d=document.createElement('div');d.className='desc';d.textContent=i.desc; const p=document.create
+// ----- Gallery admin -----
+t.contentEditable=isAdmin; t.onblur=()=>{i.title=t.textContent; saveState();}
+d.contentEditable=isAdmin; d.onblur=()=>{i.desc=d.textContent; saveState();}
+p.contentEditable=isAdmin; p.onblur=()=>{i.price=p.textContent; saveState();}
+cap.appendChild(t); cap.appendChild(d); cap.appendChild(p);
+if(isAdmin){ 
+    const del=document.createElement('button'); 
+    del.className='btn ghost'; 
+    del.textContent='Supprimer'; 
+    del.style.marginTop='4px'; 
+    del.onclick=()=>{state.gallery.splice(idx,1); saveState(); renderGallery(); populateOeuvres();}; 
+    cap.appendChild(del);
 }
-function renderGallery(){
-  const g=document.getElementById('galleryGrid');g.innerHTML='';
-  state.gallery.forEach((i,idx)=>{
-    const div=document.createElement('div');div.className='item';
-    const img=document.createElement('img');img.src=i.image;img.onclick=()=>openLightboxFromGallery(idx);
-    const cap=document.createElement('div');cap.className='caption';
-    const t=document.createElement('div');t.className='title';t.textContent=i.title;t.contentEditable=isAdmin;t.onblur=()=>{i.title=t.textContent;saveState();}
-    const d=document.createElement('div');d.className='desc';d.textContent=i.desc;d.contentEditable=isAdmin;d.onblur=()=>{i.desc=d.textContent;saveState();}
-    const p=document.createElement('div');p.className='price';p.textContent=i.price;p.contentEditable=isAdmin;p.onblur=()=>{i.price=p.textContent;saveState();}
-    cap.appendChild(t);cap.appendChild(d);cap.appendChild(p);
-    if(isAdmin){ const del=document.createElement('button');del.className='btn ghost';del.textContent='Supprimer';del.style.marginTop='4px';del.onclick=()=>{state.gallery.splice(idx,1);saveState();renderGallery();}; cap.appendChild(del);}
-    div.appendChild(img);div.appendChild(cap);g.appendChild(div);
-  });
-  if(isAdmin){
-    new Sortable(g,{animation:150,onEnd:function(evt){const item=state.gallery.splice(evt.oldIndex,1)[0];state.gallery.splice(evt.newIndex,0,item);saveState();}});
-  }
-}
-function renderOrders(){
-  const l=document.getElementById('ordersList');if(!l) return;l.innerHTML='';
-  state.orders.forEach((o,idx)=>{ const d=document.createElement('div');d.style.padding='8px';d.style.borderBottom='1px solid #eee'; d.innerHTML=`<strong>${o.name}</strong> (${o.email})<br>${o.type} / ${o.oeuvre} x${o.qty}<br>${o.msg || ''}`;l.appendChild(d); });
-}
-function populateOeuvres(){
-  const sel=document.getElementById('orderOeuvre');if(!sel) return; sel.innerHTML=''; state.gallery.forEach(g=>{ const o=document.createElement('option'); o.value=g.title; o.textContent=g.title; sel.appendChild(o); });
+div.appendChild(img); div.appendChild(cap); g.appendChild(div);
+});
+if(isAdmin){
+    new Sortable(g,{animation:150,onEnd:function(evt){
+        const item=state.gallery.splice(evt.oldIndex,1)[0];
+        state.gallery.splice(evt.newIndex,0,item); saveState();
+    }});
 }
 
-/* -----------------------------
-   LIGHTBOX
------------------------------ */
-function openLightboxFromGallery(idx){ const i=state.gallery[idx];document.getElementById('lightboxImg').src=i.image;document.getElementById('lightboxTitle').textContent=i.title;document.getElementById('lightboxDesc').textContent=i.desc;document.getElementById('lightboxPrice').textContent=i.price;document.getElementById('lightbox').style.display='flex';}
-function openLightboxFromHero(){ document.getElementById('lightboxImg').src=state.hero.image; document.getElementById('lightboxTitle').textContent=''; document.getElementById('lightboxDesc').textContent=state.hero.text; document.getElementById('lightboxPrice').textContent=''; document.getElementById('lightbox').style.display='flex';}
-function closeLightbox(){ document.getElementById('lightbox').style.display='none';}
+// ----- Lightbox -----
+function openLightboxFromGallery(idx){
+    const i=state.gallery[idx];
+    document.getElementById('lightboxImg').src=i.image;
+    document.getElementById('lightboxTitle').textContent=i.title;
+    document.getElementById('lightboxDesc').textContent=i.desc;
+    document.getElementById('lightboxPrice').textContent=i.price;
+    document.getElementById('lightbox').style.display='flex';
+}
+function openLightboxFromHero(){
+    document.getElementById('lightboxImg').src=state.hero.image;
+    document.getElementById('lightboxTitle').textContent='';
+    document.getElementById('lightboxDesc').textContent=state.hero.text;
+    document.getElementById('lightboxPrice').textContent='';
+    document.getElementById('lightbox').style.display='flex';
+}
+function closeLightbox(){document.getElementById('lightbox').style.display='none';}
 
-/* -----------------------------
-   NAVIGATION
------------------------------ */
-function show(id){ ['accueil','apropos','prehistoire','services','galerie','commande','contact','adminSettings'].forEach(s=>{document.getElementById(s).style.display=(s===id?'block':'none');}); }
+// ----- Navigation -----
+function show(id){
+    ['accueil','apropos','prehistoire','services','galerie','commande','contact','adminSettings'].forEach(s=>{
+        document.getElementById(s).style.display=(s===id?'block':'none');
+    });
+}
 
-/* -----------------------------
-   ADMIN
------------------------------ */
-let isAdmin=false;
-function openLogin(){ document.getElementById('loginModal').style.display='flex'; }
-function closeLogin(){ document.getElementById('loginModal').style.display='none'; }
-function login(){ const e=document.getElementById('loginEmail').value; const p=document.getElementById('loginPass').value; if(e===state.creds.email && p===state.creds.pass){isAdmin=true; document.getElementById('loginModal').style.display='none'; showAdminPanels(); renderAll(); } else {document.getElementById('loginError').textContent='Identifiants incorrects';} }
+// ----- Admin -----
+function openLogin(){document.getElementById('loginModal').style.display='flex';}
+function closeLogin(){document.getElementById('loginModal').style.display='none';}
+function login(){
+    const e=document.getElementById('loginEmail').value;
+    const p=document.getElementById('loginPass').value;
+    if(e===state.creds.email && p===state.creds.pass){
+        isAdmin=true;
+        document.getElementById('loginModal').style.display='none';
+        showAdminPanels();
+        renderAll();
+    } else {
+        document.getElementById('loginError').textContent='Identifiants incorrects';
+    }
+}
 function logoutAdmin(){isAdmin=false; hideAdminPanels(); renderAll(); alert('Déconnecté');}
 function showAdminPanels(){['adminAccueil','adminApropos','adminPrehistoire','adminServices','adminGallery','adminOrders','adminContact','adminSettings'].forEach(id=>{document.getElementById(id).style.display='block'});document.getElementById('adminNotice').style.display='block';}
 function hideAdminPanels(){['adminAccueil','adminApropos','adminPrehistoire','adminServices','adminGallery','adminOrders','adminContact','adminSettings'].forEach(id=>{document.getElementById(id).style.display='none'});document.getElementById('adminNotice').style.display='none';}
 
-/* -----------------------------
-   HERO ADMIN
------------------------------ */
-function saveHero(){ const t=document.getElementById('editHeroText').value; state.hero.text=t; const f=document.getElementById('editHeroImage').files[0]; if(f){ const r=new FileReader(); r.onload=function(){ state.hero.image=r.result; saveState(); renderAll(); } r.readAsDataURL(f);} else { saveState(); renderAll(); } }
-function resetHero(){state.hero=defaultState().hero;saveState();renderAll();}
+// ----- Hero admin -----
+function saveHero(){
+    const t=document.getElementById('editHeroText').value;
+    state.hero.text=t;
+    const f=document.getElementById('editHeroImage').files[0];
+    if(f){
+        const r=new FileReader();
+        r.onload=function(){state.hero.image=r.result; saveState(); renderAll();}
+        r.readAsDataURL(f);
+    } else {saveState(); renderAll();}
+}
+function resetHero(){state.hero=defaultState().hero; saveState(); renderAll();}
 
-/* -----------------------------
-   À PROPOS ADMIN
------------------------------ */
-function saveAbout(){state.about=document.getElementById('editAbout').value;saveState();renderAll();}
+// ----- About admin -----
+function saveAbout(){state.about=document.getElementById('editAbout').value; saveState(); renderAll();}
 
-/* -----------------------------
-   PRÉ-HISTOIRE ADMIN
------------------------------ */
-function savePrehistoire(){state.prehistoire=document.getElementById('editPrehistoire').value;saveState();renderAll();}
+// ----- Prehistoire admin -----
+function savePrehistoire(){state.prehistoire=document.getElementById('editPrehistoire').value; saveState(); renderAll();}
 
-/* -----------------------------
-   SERVICES ADMIN
------------------------------ */
-function saveServices(){ state.services=document.getElementById('editServices').value.split('\n').filter(Boolean); saveState(); renderServices(); populateOeuvres(); }
+// ----- Services admin -----
+function saveServices(){
+    state.services=document.getElementById('editServices').value.split('\n').filter(Boolean);
+    saveState(); renderServices(); populateOeuvres();
+}
 
-/* -----------------------------
-   GALLERY ADMIN
------------------------------ */
-function addGalleryItem(){ const f=document.getElementById('galleryFile').files[0]; if(!f)return alert('Choisir une image'); const t=document.getElementById('galleryTitle').value||'Titre'; const d=document.getElementById('galleryDesc').value||''; const p=document.getElementById('galleryPrice').value||''; const r=new FileReader(); r.onload=function(){ state.gallery.push({image:r.result,title:t,desc:d,price:p}); saveState(); renderGallery(); populateOeuvres(); }; r.readAsDataURL(f);}
-function clearGallery(){ if(confirm('Vider toute la galerie ?')){ state.gallery=[]; saveState(); renderGallery(); populateOeuvres(); }}
+// ----- Gallery admin -----
+function addGalleryItem(){
+    const f=document.getElementById('galleryFile').files[0];
+    if(!f) return alert('Choisir une image');
+    const t=document.getElementById('galleryTitle').value||'Titre';
+    const d=document.getElementById('galleryDesc').value||'';
+    const p=document.getElementById('galleryPrice').value||'';
+    const r=new FileReader();
+    r.onload=function(){state.gallery.push({image:r.result,title:t,desc:d,price:p}); saveState(); renderGallery(); populateOeuvres();}
+    r.readAsDataURL(f);
+}
+function clearGallery(){ if(confirm('Vider toute la galerie ?')){state.gallery=[]; saveState(); renderGallery(); populateOeuvres();}}
 
-/* -----------------------------
-   CONTACT ADMIN
------------------------------ */
-function saveContact(){ state.contact.email=document.getElementById('editContactEmail').value; state.contact.tel=document.getElementById('editContactTel').value; state.contact.fb=document.getElementById('editContactFB').value; state.contact.wa=document.getElementById('editContactWA').value; saveState(); renderAll(); }
+// ----- Contact admin -----
+function saveContact(){
+    state.contact.email=document.getElementById('editContactEmail').value;
+    state.contact.tel=document.getElementById('editContactTel').value;
+    state.contact.fb=document.getElementById('editContactFB').value;
+    state.contact.wa=document.getElementById('editContactWA').value;
+    saveState(); renderAll();
+}
 
-/* -----------------------------
-   COMMANDES
------------------------------ */
-document.getElementById('orderForm').addEventListener('submit',function(e){e.preventDefault(); const o={name:document.getElementById('orderName').value,email:document.getElementById('orderEmail').value,tel:document.getElementById('orderTel').value,type:document.getElementById('orderType').value,oeuvre:document.getElementById('orderOeuvre').value,qty:document.getElementById('orderQty').value,msg:document.getElementById('orderMsg').value}; state.orders.push(o); saveState(); alert('Commande enregistrée !'); resetOrderForm(); renderOrders(); })
+// ----- Orders -----
+document.getElementById('orderForm').addEventListener('submit',function(e){
+    e.preventDefault();
+    const o={name:document.getElementById('orderName').value,
+             email:document.getElementById('orderEmail').value,
+             tel:document.getElementById('orderTel').value,
+             type:document.getElementById('orderType').value,
+             oeuvre:document.getElementById('orderOeuvre').value,
+             qty:document.getElementById('orderQty').value,
+             msg:document.getElementById('orderMsg').value};
+    state.orders.push(o); saveState(); alert('Commande enregistrée !'); resetOrderForm(); renderOrders();
+});
 function resetOrderForm(){document.getElementById('orderForm').reset();}
-function clearOrders(){ if(confirm('Vider toutes les commandes ?')){ state.orders=[]; saveState(); renderOrders(); }}
+function renderOrders(){
+    const l=document.getElementById('ordersList'); if(!l) return; l.innerHTML='';
+    state.orders.forEach(o=>{
+        const d=document.createElement('div');
+        d.style.padding='8px'; d.style.borderBottom='1px solid #eee';
+        d.innerHTML=`<strong>${o.name}</strong> (${o.email})<br>${o.type} / ${o.oeuvre} x${o.qty}<br>${o.msg || ''}`;
+        l.appendChild(d);
+    });
+}
+function clearOrders(){ if(confirm('Vider toutes les commandes ?')){state.orders=[]; saveState(); renderOrders();}}
 
-/* -----------------------------
-   ADMIN CREDS
------------------------------ */
-function changeAdminCreds(){ const e=document.getElementById('newAdminEmail').value; const p=document.getElementById('newAdminPass').value; if(e)state.creds.email=e; if(p)state.creds.pass=p; saveState(); alert('Identifiants modifiés');}
+// ----- Admin creds -----
+function changeAdminCreds(){
+    const e=document.getElementById('newAdminEmail').value;
+    const p=document.getElementById('newAdminPass').value;
+    if(e) state.creds.email=e;
+    if(p) state.creds.pass=p;
+    saveState(); alert('Identifiants modifiés');
+}
 
-/* -----------------------------
-   BACKUP JSON
------------------------------ */
-function exportJSON(){ const d=document.createElement('a'); d.href='data:text/json;charset=utf-8,'+encodeURIComponent(JSON.stringify(state)); d.download='backup_sculpture.json'; d.click();}
-function importJSON(){ const f=document.getElementById('importFile').files[0]; if(!f)return; const r=new FileReader(); r.onload=function(){ try{ state=JSON.parse(r.result); saveState(); renderAll(); alert('Importé avec succès'); }catch(e){alert('Erreur import JSON');} }; r.readAsText(f);}
+// ----- JSON Backup -----
+function exportJSON(){
+    const d=document.createElement('a');
+    d.href='data:text/json;charset=utf-8,'+encodeURIComponent(JSON.stringify(state));
+    d.download='backup_sculpture.json';
+    d.click();
+}
+function importJSON(){
+    const f=document.getElementById('importFile').files[0];
+    if(!f) return;
+    const r=new FileReader();
+    r.onload=function(){
+        try{state=JSON.parse(r.result); saveState(); renderAll(); alert('Importé avec succès');}
+        catch(e){alert('Erreur import JSON');}
+    }
+    r.readAsText(f);
+}
 
-/* -----------------------------
-   INIT
------------------------------ */
+// ----- Populate order select -----
+function populateOeuvres(){
+    const sel=document.getElementById('orderOeuvre'); if(!sel) return;
+    sel.innerHTML='';
+    state.gallery.forEach(g=>{const o=document.createElement('option'); o.value=g.title; o.textContent=g.title; sel.appendChild(o);});
+}
+
+// ----- Init -----
 loadState(); renderAll();
 </script>
-
-</body>
-</html>
